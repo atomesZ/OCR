@@ -22,5 +22,7 @@ Network initNetwork(int *sizes);
 void freenet(Network net);
 double sigmoid(double z);
 double sigmoid_prime(double z);
+double dot(double *w, double *x_in, int len, int i);
+void feedforward(Network net, double *inpt, double *outpt, int layer);
 
 #endif

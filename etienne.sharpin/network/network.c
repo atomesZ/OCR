@@ -37,10 +37,29 @@ void freenet(Network net)
 
 double sigmoid(double z)
 {
-	return 1.0 / (1.0 + exp(z));
+	return 1.0 / (1.0 + exp(-z));
 }
 
 double sigmoid_prime(double z)
 {
 	return sigmoid(z) * (1 - sigmoid(z));
+}
+
+double dot(double *w, double *x_in, int len, int i)
+{
+	double r = 0;
+
+	for(int j = 0; j < len; ++j)
+		r += w[j + i] * x_in[j];
+
+	return r;
+}
+
+void feedforward(Network net, double *inpt, double *outpt, int layer)
+{
+	for(int i = 0; i < net.sizes[layer]; ++i)
+	{
+		double d = dot(net.weights, inpt, net.sizes[layer], i);
+		outpt[i] = sigmoid(d + net.biases[i]);	
+	}
 }
