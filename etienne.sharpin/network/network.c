@@ -65,3 +65,36 @@ void feedforward(Network net, double *inpt, double *outpt, int layer)
 		outpt[i] = sigmoid(d + net.biases[i]);	
 	}
 }
+
+void printNet(Network net)
+{
+	printf("###################################################Neural");
+	printf("network###############################################\n");
+
+	int h = 0;
+	int i = 0;
+	int j = 0;
+	
+        while(h < net.num_layers - 1)
+	{
+		int a = i;
+		int b = j;
+	        while(i - a < net.sizes[h])
+		{
+			printf("Neuron %i, Bias: %lf ", i+1, net.biases[i]);
+			printf("Weights: ");
+			while(j - b < net.sizes[h+1] )
+			{
+				printf(" w%i: %lf", j+1, net.weights[j]);
+				++j;
+			}
+			b = j;
+			printf("\n");
+			++i;
+		}
+		++h;
+	}
+	printf("########################################################");
+	printf("#######################################################\n");
+
+}

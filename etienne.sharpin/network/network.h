@@ -24,5 +24,6 @@ double sigmoid(double z);
 double sigmoid_prime(double z);
 double dot(double *w, double *x_in, int len, int i);
 void feedforward(Network net, double *inpt, double *outpt, int layer);
+void printNet(Network net);
 
 #endif
