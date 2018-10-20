@@ -21,5 +21,6 @@ struct Network
 Network initNetwork(int *sizes);
 void freenet(Network net);
 double sigmoid(double z);
+double sigmoid_prime(double z);
 
 #endif
