@@ -94,6 +94,12 @@ void printNet(Network net)
 		}
 		++h;
 	}
+
+	for(int k = 0; k < net.sizes[net.num_layers -1]; ++k)
+	{
+		printf("Neuron %i, Bias: %lf\n", i+1, net.biases[i]);
+		++i;
+	}
 	printf("########################################################");
 	printf("#######################################################\n");
 
