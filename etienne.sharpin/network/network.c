@@ -57,9 +57,11 @@ double dot(double *w, double *x_in, int len, int i)
 
 void feedforward(Network net, double *inpt, double *outpt, int layer)
 {
-	for(int i = 0; i < net.sizes[layer]; ++i)
+	int s = net.sizes[layer];
+
+	for(int i = 0; i < s; ++i)
 	{
-		double d = dot(net.weights, inpt, net.sizes[layer], i);
+		double d = dot(net.weights, inpt, net.sizes[layer], i * s);
 		outpt[i] = sigmoid(d + net.biases[i]);	
 	}
 }
