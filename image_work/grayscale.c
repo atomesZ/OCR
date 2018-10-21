@@ -97,8 +97,11 @@ int main()
 		    put_pixel(image_surface, x, y, pixel);
 	    }
     }
-
+    
+    // Save the image
     SDL_SaveBMP(image_surface, "image_test/my_grey_image.bmp");
+    
+    // Update the surfaces
     update_surface(screen_surface, image_surface);
 
     // Wait for a key to be pressed.

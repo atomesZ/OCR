@@ -178,6 +178,9 @@ int main()
 	    }
     }
 
+    // Save the imgae
+    SDL_SaveBMP(image_surface, "image_test/my_blackandwhite_image.bmp");
+
     // Update the surfaces
     update_surface(screen_surface, image_surface);
 
