@@ -26,6 +26,8 @@ Network initNetwork(int *sizes)
 		net.weights[i] = ((double)rand()/(double)RAND_MAX);
 	}
 
+	net.n_outputs = malloc(sizeof(double) * net.num_neurons);
+
 	return net;
 }
 
@@ -33,6 +35,7 @@ void freenet(Network net)
 {
 	free(net.biases);
 	free(net.weights);
+	free(net.n_outputs);
 }
 
 double sigmoid(double z)
@@ -45,31 +48,49 @@ double sigmoid_prime(double z)
 	return sigmoid(z) * (1 - sigmoid(z));
 }
 
-double dot(double *w, double *x_in, int len, int i)
+double dot(double *w, double *n_outputs, int len, int ifo, int ifw)
 {
 	double r = 0;
-
-	for(int j = 0; j < len; ++j)
-		r += w[j + i] * x_in[j];
+	
+	for(int j = ifo; j < ifo + len; ++j)
+	{
+		r += w[j + ifw] * n_outputs[j];
+	}
 
 	return r;
 }
 
-void feedforward(Network net, double *inpt, double *outpt, int layer)
+void feedforward(Network net, double *n_outputs)
 {
-	int s = net.sizes[layer];
+	int ifo = 0;
+	int ifw = 0;
 
-	for(int i = 0; i < s; ++i)
+	for(int layer = 0; layer < net.num_layers - 1; ++layer)
 	{
-		double d = dot(net.weights, inpt, net.sizes[layer], i * s);
-		outpt[i] = sigmoid(d + net.biases[i]);	
+		for(int i = ifo; i < ifo + net.sizes[layer + 1]; ++i)
+		{
+			double d = dot(net.weights, n_outputs, net.sizes[layer], ifo, ifw);
+			n_outputs[i] = sigmoid(d + net.biases[i]);
+			ifw += net.sizes[layer];
+		}
+
+		ifo += net.sizes[layer];
 	}
+
+	int layer = net.num_layers - 1;
+	for(int i = ifo; i < ifo + net.sizes[layer]; ++i)
+	{
+		double d = dot(net.weights, n_outputs, net.sizes[layer], ifo, ifw);
+		n_outputs[i] = sigmoid(d + net.biases[i]);
+		ifw += net.sizes[layer];
+	}
+
 }
 
 void printNet(Network net)
 {
 	printf("###################################################Neural");
-	printf("network###############################################\n");
+	printf("network################################################\n");
 
 	int h = 0;
 	int i = 0;
@@ -100,7 +121,7 @@ void printNet(Network net)
 		printf("Neuron %i, Bias: %lf\n", i+1, net.biases[i]);
 		++i;
 	}
-	printf("########################################################");
+	printf("#########################################################");
 	printf("#######################################################\n");
 
 }

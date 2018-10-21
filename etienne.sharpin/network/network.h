@@ -16,14 +16,15 @@ struct Network
 	double *weights; //list of weights for neurons
 	int num_neurons; //number of neurons
 	int num_links; //number of links
+	double *n_outputs; //list of outputs of each neurons
 };
 
 Network initNetwork(int *sizes);
 void freenet(Network net);
 double sigmoid(double z);
 double sigmoid_prime(double z);
-double dot(double *w, double *x_in, int len, int i);
-void feedforward(Network net, double *inpt, double *outpt, int layer);
+double dot(double *w, double *n_outputs, int len, int ifo, int ifw);
+void feedforward(Network net, double *n_outputs);
 void printNet(Network net);
 
 #endif
