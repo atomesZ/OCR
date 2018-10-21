@@ -81,19 +81,19 @@ int backprop(Network N,double out,double expected)                    // XOR
 
     double a = cost_prime_sum(out,expected,N.weights[6]) + cost_prime_sum(out,expected,N.weights[5]) + cost_prime_sum(out,expected,N.weights[4]);
 
-    N.weights[8] = N.weights[8] - 1*cost_prime_weight(out,N.[2],cost_prime_out(out,expected));
-    N.weights[7] = N.weights[7] - 1*cost_prime_weight(out,N.[2],cost_prime_out(out,expected));
-    N.weights[6] = N.weights[6] - 1*cost_prime_weight(out,N.[2],cost_prime_out(out,expected));
+    N.weights[8] = N.weights[8] - 1*cost_prime_weight(out,N.n_outputs[2],cost_prime_out(out,expected));
+    N.weights[7] = N.weights[7] - 1*cost_prime_weight(out,N.n_outputs[2],cost_prime_out(out,expected));
+    N.weights[6] = N.weights[6] - 1*cost_prime_weight(out,N.n_outputs[2],cost_prime_out(out,expected));
 
     N.biases[5] = N.biases[5] - 1*cost_prime_bias(out,expected);
     N.biases[4] = N.biases[4] - 1*cost_prime_bias(out,expected);
 
-    N.weights[5] = N.weights[5] - 1*cost_prime_weight(out,N.[1],a);
-    N.weights[4] = N.weights[4] - 1*cost_prime_weight(out,N.[1],a);
-    N.weights[3] = N.weights[3] - 1*cost_prime_weight(out,N.[1],a);
-    N.weights[2] = N.weights[2] - 1*cost_prime_weight(out,N.[0],a);
-    N.weights[1] = N.weights[1] - 1*cost_prime_weight(out,N.[0],a);
-    N.weights[0] = N.weights[0] - 1*cost_prime_weight(out,N.[0],a);
+    N.weights[5] = N.weights[5] - 1*cost_prime_weight(out,N.n_outputs[1],a);
+    N.weights[4] = N.weights[4] - 1*cost_prime_weight(out,N.n_outputs[1],a);
+    N.weights[3] = N.weights[3] - 1*cost_prime_weight(out,N.n_outputs[1],a);
+    N.weights[2] = N.weights[2] - 1*cost_prime_weight(out,N.n_outputs[0],a);
+    N.weights[1] = N.weights[1] - 1*cost_prime_weight(out,N.n_outputs[0],a);
+    N.weights[0] = N.weights[0] - 1*cost_prime_weight(out,N.n_outputs[0],a);
 }
 
 
