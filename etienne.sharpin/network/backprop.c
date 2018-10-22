@@ -67,7 +67,7 @@ double new_bias(double bias,double LR)
 
 
 //int backprop(Network N,double *outpt,Matrix in)
-int backprop(Network N,double out,double expected)                    // XOR
+void backprop(Network N,double out,double expected)                    // XOR
 {
     //double cost = total_cost(out,expected);
 
