@@ -21,6 +21,6 @@ double cost_prime_sum(double out,double expected,double weight);
 //double total_cost(Matrix out,Matrix in)
 double total_cost(double out,double expected);
 
-int backprop(Network N,double out,double expected);
+void backprop(Network N,double out,double expected);
 
 #endif //OCR_BACKPROP_H
