@@ -1,5 +1,4 @@
 #include "backprop.h"
-#include "matrix.h"
 #include "network.h"
 #include <math.h>
 
