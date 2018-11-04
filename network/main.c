@@ -12,6 +12,13 @@ int main()
 	feedforward(net, net.n_outputs);
 	printf("\n");
 	printNet(net);
+	printf("\n");
+	for(int i = 0; i < 300; ++i)
+	{
+		backprop(net, net.n_outputs[7], 1);
+		feedforward(net, net.n_outputs);
+		printNet(net);
+	}
 	freenet(net);
 
 	return 0;
