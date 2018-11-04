@@ -102,7 +102,7 @@ void printNet(Network net)
 		int b = j;
 	    while(i - a < net.sizes[h])
 		{
-			printf("Neuron %i, Bias: %lf ", i+1, net.biases[i]);
+			printf("Neuron %i, Output: %lf, Bias: %lf ", i+1, net.n_outputs[i+net.sizes[0]], net.biases[i]);
 			printf("Weights: ");
 			while(j - b < net.sizes[h+1] )
 			{
@@ -118,7 +118,7 @@ void printNet(Network net)
 
 	for(int k = 0; k < net.sizes[net.num_layers -1]; ++k)
 	{
-		printf("Neuron %i, Bias: %lf\n", i+1, net.biases[i]);
+		printf("Neuron %i, Output: %lf, Bias: %lf\n", i+1, net.n_outputs[i+net.sizes[0]], net.biases[i]);
 		++i;
 	}
 	printf("#########################################################");
