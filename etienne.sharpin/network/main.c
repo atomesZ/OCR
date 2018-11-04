@@ -1,4 +1,5 @@
 #include"network.h"
+#include"backprop.h"
 
 int main()
 {
@@ -7,6 +8,7 @@ int main()
 	Network net = initNetwork(sizes);
 	net.n_outputs[0] = 0;
 	net.n_outputs[1] = 1;
+	printNet(net);
 	feedforward(net, net.n_outputs);
 	printf("\n");
 	printNet(net);

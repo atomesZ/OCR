@@ -1,4 +1,5 @@
 #include"network.h"
+#include"backprop.h"
 
 Network initNetwork(int *sizes)
 {

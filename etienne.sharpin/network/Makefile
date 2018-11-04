@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS  = -Wall -Wextra -Werror -std=c99 -O3 -lm
 
-default: main
+all: main
 
 main:  main.o network.o 
 	$(CC) $(CFLAGS) -o main main.o network.o
