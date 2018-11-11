@@ -27,7 +27,7 @@ Network initNetwork(int *sizes)
 		net.weights[i] = ((double)rand()/(double)RAND_MAX);
 	}
 
-	net.n_outputs = malloc(sizeof(double) * (net.num_neurons+sizes[0]));
+	net.n_outputs = malloc(sizeof(double) * net.num_neurons);
 
 	return net;
 }
@@ -51,22 +51,23 @@ double sigmoid_prime(double z)
 
 double dot(double *w, double *n_outputs, int len, int ifo, int ifw)
 {
+	//this function calculate the input of the neuron
 	double r = 0;
 	
-	for(int j = ifo; j < ifo + len; ++j)
+	for(int j = 0; j < len; ++j)
 	{
-		r += w[j + ifw] * n_outputs[j];
+		r += w[j + ifw] * n_outputs[j + ifo];
 	}
 
 	return r;
 }
-
+/*
 void feedforward(Network net, double *n_outputs)
 {
-	int ifo = 0;
-	int ifw = 0;
+	int ifo = 0; //index of the first output
+	int ifw = 0; // index of the first weight
 
-	for(int layer = 0; layer < net.num_layers - 1; ++layer)
+	for(int layer = 1; layer < net.num_layers - 1; ++layer)
 	{
 		for(int i = ifo + net.sizes[0]; i < ifo + net.sizes[layer + 1] + net.sizes[0]; ++i)
 		{
@@ -79,12 +80,36 @@ void feedforward(Network net, double *n_outputs)
 	}
 
 	int layer = net.num_layers - 1;
-	for(int i = ifo; i < ifo + net.sizes[layer] + net.sizes[0]; ++i)
+	for(int i = ifo; i < ifo + net.sizes[layer] + net.sizes[0]; ++i) //net.sizes[0] ????
 	{
 		double d = dot(net.weights, n_outputs, net.sizes[layer], ifo, ifw);
 		n_outputs[i] = sigmoid(d + net.biases[i]);
-		ifw += net.sizes[layer];
+		ifw += net.sizes[layer - 1];
 	}
+
+}*/
+
+
+
+void feedforward(Network net, double *n_outputs)
+{
+	int in_w = net.sizes[0];
+	int in_r = 0;
+	int ifw = 0;
+	int layer = 0;
+    while(layer < net.num_layers - 1)
+	{
+		for(int i = 0; i < net.sizes[layer + 1]; ++i)
+		{
+			double d = dot(net.weights, n_outputs, net.sizes[layer], in_r, ifw);
+			n_outputs[in_w + i] = sigmoid(d + net.biases[in_w + i]);
+			ifw += net.sizes[layer];
+		}
+		in_r += net.sizes[layer];
+		in_w += net.sizes[layer + 1];
+		++layer;
+	}
+
 
 }
 
@@ -103,11 +128,11 @@ void printNet(Network net)
 		int b = j;
 	    while(i - a < net.sizes[h])
 		{
-			printf("Neuron %i, Output: %lf, Bias: %lf ", i+1, net.n_outputs[i+net.sizes[0]], net.biases[i]);
+			printf("Neuron %i, Output: %lf, Bias: %lf ", i, net.n_outputs[i], net.biases[i]);
 			printf("Weights: ");
 			while(j - b < net.sizes[h+1] )
 			{
-				printf(" w%i: %lf", j+1, net.weights[j]);
+				printf(" w%i: %lf", j, net.weights[j]);
 				++j;
 			}
 			b = j;
@@ -119,7 +144,7 @@ void printNet(Network net)
 
 	for(int k = 0; k < net.sizes[net.num_layers -1]; ++k)
 	{
-		printf("Neuron %i, Output: %lf, Bias: %lf\n", i+1, net.n_outputs[i+net.sizes[0]], net.biases[i]);
+		printf("Neuron %i, Output: %lf, Bias: %lf\n", i, net.n_outputs[i], net.biases[i]);
 		++i;
 	}
 	printf("#########################################################");
