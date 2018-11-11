@@ -37,6 +37,7 @@ int main()
 		feedforward(net, net.n_outputs);
 		backprop(net, net.n_outputs[net.num_neurons - 1], a + b == 1);
 		printNet(net);
+		printf("Input: %i %i Expected: %i Returned: %lf\n", a, b, a + b == 1, net.n_outputs[net.num_neurons - 1]);
 	}
 	freenet(net);
 
