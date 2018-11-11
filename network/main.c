@@ -18,7 +18,7 @@ int main()
 	srand(time(NULL));
 	int a;
 	int b;
-	for(int i = 0; i < 300; ++i)
+	for(int i = 0; i < 100; ++i)
 	{
 		a = rand();
 		b = rand();
@@ -34,8 +34,8 @@ int main()
 		
 		net.n_outputs[0] = a;
 		net.n_outputs[1] = b;
-		backprop(net, net.n_outputs[net.num_neurons - 1], a + b == 1);
 		feedforward(net, net.n_outputs);
+		backprop(net, net.n_outputs[net.num_neurons - 1], a + b == 1);
 		printNet(net);
 	}
 	freenet(net);
