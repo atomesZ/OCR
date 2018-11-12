@@ -91,7 +91,7 @@ void feedforward(Network net, double *n_outputs)
 
 
 
-void feedforward(Network net, double *n_outputs)
+void feedforward(Network net)
 {
 	int in_w = net.sizes[0];
 	int in_r = 0;
@@ -101,8 +101,8 @@ void feedforward(Network net, double *n_outputs)
 	{
 		for(int i = 0; i < net.sizes[layer + 1]; ++i)
 		{
-			double d = dot(net.weights, n_outputs, net.sizes[layer], in_r, ifw);
-			n_outputs[in_w + i] = sigmoid(d + net.biases[in_w + i]);
+			double d = dot(net.weights, net.n_outputs, net.sizes[layer], in_r, ifw);
+			net.n_outputs[in_w + i] = sigmoid(d + net.biases[in_w + i]);
 			ifw += net.sizes[layer];
 		}
 		in_r += net.sizes[layer];

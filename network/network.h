@@ -24,7 +24,7 @@ void freenet(Network net);
 double sigmoid(double z);
 double sigmoid_prime(double z);
 double dot(double *w, double *n_outputs, int len, int ifo, int ifw);
-void feedforward(Network net, double *n_outputs);
+void feedforward(Network net);
 void printNet(Network net);
 
 #endif

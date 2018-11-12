@@ -6,14 +6,6 @@ int main()
 	int array[] = {2,3,1};
 	int *sizes = array;
 	Network net = initNetwork(sizes);
-	net.n_outputs[0] = 1;
-	net.n_outputs[1] = 1;
-	printNet(net);
-	feedforward(net, net.n_outputs);
-	printf("\n");
-	printNet(net);
-	printf("\n");
-	printf("final output: %lf ", net.n_outputs[net.num_neurons - 1]);
 
 	srand(time(NULL));
 	int a;
@@ -34,7 +26,7 @@ int main()
 		
 		net.n_outputs[0] = a;
 		net.n_outputs[1] = b;
-		feedforward(net, net.n_outputs);
+		feedforward(net);
 		backprop(net, net.n_outputs[net.num_neurons - 1], a + b == 1);
 		printNet(net);
 		printf("Input: %i %i Expected: %i Returned: %lf\n", a, b, a + b == 1, net.n_outputs[net.num_neurons - 1]);

@@ -1,5 +1,4 @@
 #include "backprop.h"
-#include "matrix.h"
 #include "network.h"
 #include <math.h>
 
@@ -55,7 +54,7 @@ double total_cost(double out,double expected)         //XOR
         total_cost += cost(out,expected);                         //XOR
     }
 
-    printf("%d",total_cost);
+    printf("%lf",total_cost);
 
     return total_cost;
 }
