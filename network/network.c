@@ -12,10 +12,12 @@ Network initNetwork(int *sizes)
 
 	net.num_neurons = sizes[0] + sizes[1] + sizes[2];
 
-	net.num_links = sizes[1] * (sizes[0] + sizes[2]); 
+	net.num_links = sizes[1] * (sizes[0] + sizes[2]);
+
+	net.num_biases = net.num_neurons - sizes[0];
 
 	srand(time(NULL));
-	net.biases = malloc(sizeof(double) * (net.num_neurons - sizes[0]));
+	net.biases = malloc(sizeof(double) * net.num_biases);
 	for(int i = 0; i < net.num_neurons- sizes[0]; ++i)
 	{
 		net.biases[i] = ((double)rand()/(double)RAND_MAX);
@@ -32,8 +34,73 @@ Network initNetwork(int *sizes)
 	return net;
 }
 
+void saveNetwork(Network net, char* filename)
+{
+    FILE *file;//declare file
+    file = fopen(filename, "w+");//create or rewrite file
+
+    fprintf(file, "%d\n", net.num_layers);//num_layers
+
+    for (int i = 0; i < net.num_layers; ++i)//*sizes
+    {
+        fprintf(file, "%d\n", net.sizes[i]);
+    }
+
+    for (int i = 0; i < net.num_biases; ++i)//*biases
+    {
+        fprintf(file, "%lf\n", net.biases[i]);
+    }
+
+	for (int i = 0; i < net.num_links; ++i)//*weights
+    {
+        fprintf(file, "%lf\n", net.weights[i]);
+	}
+
+	fclose(file);//close file
+}
+
+Network loadNetwork(char* filename)
+{
+	FILE  *file;//declare file
+
+	Network net;//declare network
+
+	file = fopen(filename, "r");//open file to read
+
+	fscanf(file, "%d\n", &net.num_layers);//get num_layers
+    net.sizes = malloc(sizeof(int) * net.num_layers);//allocate memory for *sizes
+
+    for(int i = 0; i < net.num_layers; ++i)//get *sizes
+    {
+        fscanf(file, "%d\n", &net.sizes[i]);
+    }
+
+	net.num_biases = net.sizes[1] + net.sizes[2];//get num_biases
+	net.num_neurons = net.sizes[0] + net.num_biases;//get num_neurons
+	net.num_links = net.sizes[1] * (net.sizes[0] + net.sizes[2]);//get num_links
+
+    net.biases = malloc(sizeof(double) * net.num_biases);//allocate memory for *biases
+    for (int i = 0; i < net.num_biases; ++i)//get *biases
+    {
+		fscanf(file, "%lf\n", &net.biases[i]);
+    }
+	
+	net.weights = malloc(sizeof(double) * net.num_links);//allocate memory for *weights
+	for (int i = 0; i < net.num_links; ++i)//get *weights
+	{
+		fscanf(file, "%lf\n", &net.weights[i]);
+	}
+
+
+	net.n_outputs = malloc(sizeof(double) * net.num_neurons);
+		
+	fclose(file);//close file
+	return net;//return the network
+}
+
 void freenet(Network net)
 {
+	//free(net.sizes);
 	free(net.biases);
 	free(net.weights);
 	free(net.n_outputs);

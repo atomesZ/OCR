@@ -16,10 +16,13 @@ struct Network
 	double *weights; //list of weights for neurons
 	int num_neurons; //number of neurons
 	int num_links; //number of links
+	int num_biases; //number of biases
 	double *n_outputs; //list of outputs of each neurons
 };
 
 Network initNetwork(int *sizes);
+void saveNetwork(Network net, char* filename);
+Network loadNetwork(char* filename);
 void freenet(Network net);
 double sigmoid(double z);
 double sigmoid_prime(double z);

@@ -3,6 +3,7 @@
 
 int main()
 {
+	
 	int array[] = {2,3,1};
 	int *sizes = array;
 	Network net = initNetwork(sizes);
@@ -28,10 +29,20 @@ int main()
 		net.n_outputs[1] = b;
 		feedforward(net);
 		backprop(net, net.n_outputs[net.num_neurons - 1], a + b == 1);
+		feedforward(net);
 		printNet(net);
 		printf("Input: %i %i Expected: %i Returned: %lf\n", a, b, a + b == 1, net.n_outputs[net.num_neurons - 1]);
 	}
-	freenet(net);
+	
+	//saveNetwork(net, "tato");
+	freenet(net);/*
 
+	Network neet = loadNetwork("tato");
+	neet.n_outputs[0] = a;
+	neet.n_outputs[1] = b;
+	feedforward(neet);
+	printNet(neet);
+	freenet(neet);
+	free(neet.sizes);*/
 	return 0;
 }
