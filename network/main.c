@@ -9,11 +9,11 @@ int main()
 	Network net = initNetwork(sizes);
 
 	srand(time(NULL));
-	int a;
-	int b;
+	int a = 0;
+	int b = 0;
 	for(int i = 0; i < 100; ++i)
 	{
-		a = rand();
+	/*	a = rand();
 		b = rand();
 		if(a < RAND_MAX / 2)
 			a = 0;
@@ -23,7 +23,17 @@ int main()
 		if(b < RAND_MAX / 2)
 			b = 0;
 		else
+			b = 1;*/
+		
+		if(!a && !b)
 			b = 1;
+		else if (!a && b)
+			a = 1;
+		else if (a && b)
+			b = 0;
+		else if(a && !b)
+			a = 0;
+
 		
 		net.n_outputs[0] = a;
 		net.n_outputs[1] = b;
