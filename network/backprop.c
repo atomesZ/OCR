@@ -90,8 +90,8 @@ void backprop(Network N,double out,double expected)                    // XOR
     N.weights[7] = N.weights[7] - 0.1*cost_prime_weight(out,N.n_outputs[2],cost_prime_out(out,expected));
     N.weights[6] = N.weights[6] - 0.1*cost_prime_weight(out,N.n_outputs[2],cost_prime_out(out,expected));
 
-    N.biases[2] = N.biases[2] - 0.1*cost_prime_bias(out,expected);
-    N.biases[1] = N.biases[1] - 0.1*cost_prime_bias(out,expected);
+    N.biases[4] = N.biases[4] - 0.1*cost_prime_bias(out,expected);
+    N.biases[3] = N.biases[3] - 0.1*cost_prime_bias(out,expected);
 
     N.weights[5] = N.weights[5] - 0.1*cost_prime_weight(out,N.n_outputs[1],a);
     N.weights[4] = N.weights[4] - 0.1*cost_prime_weight(out,N.n_outputs[1],a);
