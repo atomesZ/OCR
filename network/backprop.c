@@ -7,13 +7,13 @@ double cost(double out,double expected)
     return 0.5*((out - expected) * (out - expected));
 }
 
-double derive_output(Network N,int i,double derivesuivante)
+double derive_output(Network N,int i,double derivesuivante, int no)
 {
     double sum = 0;
     int n = N.sizes[i];
     for (int k = 0; k < n; ++k)
     {
-        sum += sigmoid_prime(N.n_outputs[(i+1)*n+k]) * N.weights[k*i+k];
+        sum += sigmoid_prime(N.n_outputs[(i+1)*n+4]) * N.weights[no];
     }
 
     //sum = sigmoid_prime(outputsuivante) * weight;
@@ -80,38 +80,42 @@ void backprop(Network N,double out,double expected,double LR)                   
 {
     //double cost = total_cost(out,expected);
 
-    double E;
+    //double E;
     double DO;
     double DW1;
     double DW2;
     int n = N.sizes[1];
     double DO1[n];
 
-    E = cost(out,expected);
+    //E = cost(out,expected);
 
     for (int k = 0; k <= N.sizes[N.num_layers-1]; ++k)
     {
         printf("k = %d\n",k);
-        N.weights[3+k] -= LR * derive_weight(E,out,N.n_outputs[1+k]);
+        N.weights[4+k] -= LR * derive_weight((out-expected),out,N.n_outputs[2+k]);
     }
 
     printf(" ---------- \n");
 
 
     DO1[0] = (out - expected) * out * ( 1 - out) * N.weights[4];
+	DO1[1] = (out - expected) * out * ( 1 - out) * N.weights[5];
 
-    for (int i = N.num_layers-2; i > 0; --i)
+	printf("D01 %lf \n",DO1[0]);
+
+    for (int i = N.num_layers-2; i >= 0; --i)
     {
         printf("i = %d\n",i);
         for (int j = 0; j < N.sizes[i]; ++j)
         {
             printf(" j = %d\n",j);
-            DO = derive_output(N,i,DO1[j]);
+            DO = derive_output(N,2,DO1[j], 3 + j);
             DW1 = derive_weight(DO,N.n_outputs[2+j],N.n_outputs[0]);
             DW2 = derive_weight(DO,N.n_outputs[2+j],N.n_outputs[1]);
             N.weights[j*2] -= LR * DW1;
             N.weights[(j*2)+1] -= LR * DW2;
-            DO1[j] = DO;
+            //DO1[j] = DO;
+			//printf("D0 = %lf \n", DO);
         }
     }
 
@@ -143,7 +147,7 @@ void backprop(Network N,double out,double expected,double LR)                   
 
 void XOR(Network N,double out,double expected)
 {
-    double cost = 0.5*((expected - out) * (expected - out));
+    //double cost = 0.5*((expected - out) * (expected - out));
 
     /*double a = -(expected - out);
     double b = out*(1 - out);

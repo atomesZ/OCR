@@ -5,7 +5,7 @@
 
 double cost(double out,double expected);
 
-double derive_output(Network N,int i,double derivesuivante);
+double derive_output(Network N,int i,double derivesuivante, int n);
 
 double derive_weight(double derivesuivante,double outputsuivante,double output);
 
