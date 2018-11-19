@@ -2,24 +2,14 @@
 #include "network.h"
 #include <math.h>
 
-double cost(double out,double expected)
+double loss(double out,double expected)
 {
-    return 0.5*((out - expected) * (out - expected));
+    return (expected - out) * (expected - out) / 2;
 }
 
-double derive_output(Network N,int i,double derivesuivante, int no)
+double derive_output(Network net, int n)
 {
-    double sum = 0;
-    int n = N.sizes[i];
-    for (int k = 0; k < n; ++k)
-    {
-        sum += sigmoid_prime(N.n_outputs[(i+1)*n+4]) * N.weights[no];
-    }
-
-    //sum = sigmoid_prime(outputsuivante) * weight;
-
-    return sum * derivesuivante;
-
+    return sigmoid_prime(net.n_outputs[n]);
 }
 
 double derive_weight(double derivesuivante,double outputsuivante,double output)
@@ -27,122 +17,44 @@ double derive_weight(double derivesuivante,double outputsuivante,double output)
     return derivesuivante * sigmoid_prime(outputsuivante) * output;
 }
 
-/*double sum_prime_weight(int n)
+void backprop(Network net,double out,double expected,double LR)                
 {
-    return 1;
-}
 
-//double cost_prime_weight(double out,double expected,double n)
-double cost_prime_weight(double out,double n,double a)           //XOR
-{
-    return a*out_prime_sum(out)*n;
-}
+	double delta2 = (out - expected) * derive_output(net, net.num_neurons - 1);
 
-double cost_prime_bias(double out,double expected)
-{
-    return cost_prime_out(out,expected)*out_prime_sum(out);
-}
+	double delta1 = 0;
 
-double cost_prime_sum(double out,double expected,double weight)
-{
-    return cost_prime_out(out,expected)*out_prime_sum(out)*weight;
-}
+	for(int i = 0; i < net.sizes[1] * net.sizes[2]; ++i)
+	{
+		delta1 += delta2 * net.weights[i + net.sizes[0] * net.sizes[1]];
+	}
 
-//double total_cost(Matrix out,Matrix in)
-double total_cost(double out,double expected)         //XOR
-{
-    double total_cost = 0;
-    //int n = out.columns*out.rows;
-    int n = 1;                                          //XOR
-    for (int i = 0; i < n; ++i)
-    {
-        //total_cost += cost(out.m[i],in.m[1]);
-        total_cost += cost(out,expected);                         //XOR
-    }
+	double delta11 = delta1 * derive_output(net, net.sizes[0]);
+	double delta12 = delta1 * derive_output(net, net.sizes[0] + 1);
 
-    return total_cost;
-}
+	//maj
 
-double new_weight(double weight,double LR)
-{
-    return weight -LR*cost_prime_weight();
-}
+	net.biases[net.num_biases - 1] -= LR * delta2;
 
-double new_bias(double bias,double LR)
-{
-    return bias -LR*2;
-}*/
+	net.biases[0] -= LR * delta11;
+	net.biases[1] -= LR * delta12;
 
-
-
-//int backprop(Network N,double *outpt,Matrix in)
-void backprop(Network N,double out,double expected,double LR)                    // XOR
-{
-    //double cost = total_cost(out,expected);
-
-    //double E;
-    double DO;
-    double DW1;
-    double DW2;
-    int n = N.sizes[1];
-    double DO1[n];
-
-    //E = cost(out,expected);
-
-    for (int k = 0; k <= N.sizes[N.num_layers-1]; ++k)
-    {
-        printf("k = %d\n",k);
-        N.weights[4+k] -= LR * derive_weight((out-expected),out,N.n_outputs[2+k]);
-    }
-
-    printf(" ---------- \n");
-
-
-    DO1[0] = (out - expected) * out * ( 1 - out) * N.weights[4];
-	DO1[1] = (out - expected) * out * ( 1 - out) * N.weights[5];
-
-	printf("D01 %lf \n",DO1[0]);
-
-    for (int i = N.num_layers-2; i >= 0; --i)
-    {
-        printf("i = %d\n",i);
-        for (int j = 0; j < N.sizes[i]; ++j)
-        {
-            printf(" j = %d\n",j);
-            DO = derive_output(N,2,DO1[j], 3 + j);
-            DW1 = derive_weight(DO,N.n_outputs[2+j],N.n_outputs[0]);
-            DW2 = derive_weight(DO,N.n_outputs[2+j],N.n_outputs[1]);
-            N.weights[j*2] -= LR * DW1;
-            N.weights[(j*2)+1] -= LR * DW2;
-            //DO1[j] = DO;
-			//printf("D0 = %lf \n", DO);
-        }
-    }
-
-
-                                                                                                //XOR :
-
-    /*double a = cost_prime_sum(out,expected,N.weights[8]) + cost_prime_sum(out,expected,N.weights[7]) + cost_prime_sum(out,expected,N.weights[6]);
-
-    if (1) {
-
-        N.weights[8] = N.weights[8] - 0.2 * cost_prime_weight(out, N.n_outputs[1], cost_prime_out(out, expected));
-        N.weights[7] = N.weights[7] - 0.2 * cost_prime_weight(out, N.n_outputs[1], cost_prime_out(out, expected));
-        N.weights[6] = N.weights[6] - 0.2 * cost_prime_weight(out, N.n_outputs[1], cost_prime_out(out, expected));
-
-        N.biases[0] = N.biases[0] - 0.1*cost_prime_bias(out,expected);
-        N.biases[1] = N.biases[1] - 0.1*cost_prime_bias(out,expected);
-        N.biases[2] = N.biases[2] - 0.1*cost_prime_bias(out,expected);
-
-        N.weights[5] = N.weights[5] - 0.2 * cost_prime_weight(out, N.n_outputs[0], a);
-        N.weights[4] = N.weights[3] - 0.2 * cost_prime_weight(out, N.n_outputs[0], a);
-        N.weights[3] = N.weights[1] - 0.2 * cost_prime_weight(out, N.n_outputs[0], a);
-        N.weights[2] = N.weights[4] - 0.2 * cost_prime_weight(out, N.n_outputs[2], a);
-        N.weights[1] = N.weights[2] - 0.2 * cost_prime_weight(out, N.n_outputs[2], a);
-        N.weights[0] = N.weights[0] - 0.2 * cost_prime_weight(out, N.n_outputs[2], a);
-
-    }*/
-
+	int ifw = 0;
+	int n = 0;
+	while(ifw < net.sizes[0] * net.sizes[1])
+	{
+		net.weights[ifw] -= delta11 * LR * net.n_outputs[n];
+		++ifw;
+		net.weights[ifw] -= delta12 * LR * net.n_outputs[n];
+		++ifw;
+		++n;
+	}
+	while(ifw < net.num_links)
+	{
+		net.weights[ifw] -= delta2 * LR * net.n_outputs[n];
+		++ifw;
+		++n;
+	}
 }
 
 void XOR(Network N,double out,double expected)
@@ -171,19 +83,4 @@ void XOR(Network N,double out,double expected)
     N.weights[1] = N.weights[1] - 0.5 * ( ( ( (-1*(expected - out)) * (out * ( 1 - out )) )* N.weights[4] ) * ( N.n_outputs[2] * (1 - N.n_outputs[2] ) ) * N.n_outputs[1] );
     N.weights[0] = N.weights[0] - 0.5 * ( ( ( (-1*(expected - out)) * (out * ( 1 - out )) )* N.weights[4] ) * ( N.n_outputs[2] * (1 - N.n_outputs[2] ) ) * N.n_outputs[0] );
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
-
-
