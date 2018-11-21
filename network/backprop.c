@@ -20,7 +20,7 @@ double derive_weight(double derivesuivante,double outputsuivante,double output)
 void backprop(Network net,double out,double expected,double LR)                
 {
 
-	double delta2 = (out - expected) * derive_output(net, net.num_neurons - 1);
+	double delta2 = (out - expected) *  derive_output(net, net.num_neurons - 1);
 
 	double delta1 = 0;
 
@@ -33,14 +33,12 @@ void backprop(Network net,double out,double expected,double LR)
 	double delta12 = delta1 * derive_output(net, net.sizes[0] + 1);
 
 	//maj
-
 	net.biases[net.num_biases - 1] -= LR * delta2;
 
 	net.biases[0] -= LR * delta11;
 	net.biases[1] -= LR * delta12;
-
 	int ifw = 0;
-	int n = 0;
+	int n = 0;/*
 	while(ifw < net.sizes[0] * net.sizes[1])
 	{
 		net.weights[ifw] -= delta11 * LR * net.n_outputs[n];
@@ -48,7 +46,16 @@ void backprop(Network net,double out,double expected,double LR)
 		net.weights[ifw] -= delta12 * LR * net.n_outputs[n];
 		++ifw;
 		++n;
-	}
+	}*/
+	
+	net.weights[0] -= delta11 * LR * net.n_outputs[0];
+	net.weights[2] -= delta12 * LR * net.n_outputs[0];
+	net.weights[1] -= delta11 * LR * net.n_outputs[1];
+	net.weights[3] -= delta12 * LR * net.n_outputs[1];
+	ifw = 4;
+	n = 2;
+
+
 	while(ifw < net.num_links)
 	{
 		net.weights[ifw] -= delta2 * LR * net.n_outputs[n];
