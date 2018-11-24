@@ -3,20 +3,20 @@
 
 int main()
 {
-	/*
+	
 	int array[] = {2,2,1};
 	int *sizes = array;
-	Network net = initNetwork(sizes);*/
-	Network net = loadNetwork("l");
+	Network net = initNetwork(sizes);
+	//Network net = loadNetwork("l");
 
 	srand(time(NULL));
 	int a = 0;
 	int b = 0;
 	saveNetwork(net, "t");
-	double lrat = 10;
-	for(int i = 0; i < 10000000; ++i)
+	double lrat;
+	for(int i = 0; i < 1000000; ++i)
 	{
-		
+		lrat = 0.01;
 		a = rand();
 		b = rand();
 		if(a < RAND_MAX / 2)
@@ -59,8 +59,16 @@ int main()
 
 		net.n_outputs[0] = a;
 		net.n_outputs[1] = b;
+		do
+		{
 		feedforward(net);
 		backprop(net, net.n_outputs[net.num_neurons - 1], a + b == 1, lrat);
+		/*
+		if (ez == 15)
+			lrat = 0.1;
+		if (ez == 50)
+			lrat = 0.01;*/
+		}while(loss(net.n_outputs[net.num_neurons - 1], a + b == 1) > 0.001);
 	//	feedforward(net);
 	//	printNet(net);
 	//	printf("Input: %i %i Expected: %i Returned: %lf\n", a, b, a + b == 1, net.n_outputs[net.num_neurons - 1]);

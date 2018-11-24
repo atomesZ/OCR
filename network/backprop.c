@@ -19,7 +19,6 @@ double derive_weight(double derivesuivante,double outputsuivante,double output)
 
 void backprop(Network net,double out,double expected,double LR)                
 {
-
 	double delta2 = (out - expected) *  derive_output(net, net.num_neurons - 1);
 
 	double delta1 = 0;
@@ -62,6 +61,7 @@ void backprop(Network net,double out,double expected,double LR)
 		++ifw;
 		++n;
 	}
+	
 }
 
 void XOR(Network N,double out,double expected)

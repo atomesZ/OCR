@@ -3,7 +3,7 @@
 
 #include "network.h"
 
-double cost(double out,double expected);
+double loss(double out,double expected);
 
 double derive_output(Network N, int n);
 

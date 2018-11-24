@@ -20,13 +20,13 @@ Network initNetwork(int *sizes)
 	net.biases = malloc(sizeof(double) * net.num_biases);
 	for(int i = 0; i < net.num_neurons- sizes[0]; ++i)
 	{
-		net.biases[i] = ((double)rand()/(double)RAND_MAX);
+		net.biases[i] = 2 * ((double)rand()/(double)RAND_MAX) - 1;
 	}
 
 	net.weights = malloc(sizeof(double) * net.num_links);
 	for(int i = 0; i < net.num_links; ++i)
 	{
-		net.weights[i] = ((double)rand()/(double)RAND_MAX);
+		net.weights[i] = 2 * ((double)rand()/(double)RAND_MAX) - 1;
 	}
 
 	net.n_outputs = malloc(sizeof(double) * net.num_neurons);
