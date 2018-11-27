@@ -73,7 +73,7 @@ void wait_for_keypressed()
     } while(event.type != SDL_KEYUP);
 }
 
-int main()
+void display(char *file)
 {
     SDL_Surface* image_surface;
     SDL_Surface* screen_surface;
@@ -82,7 +82,7 @@ int main()
 
     init_sdl();
 
-    image_surface = load_image("image_test/my_image.jpg");
+    image_surface = load_image(file);
    
     // Display the image.
     
@@ -99,6 +99,4 @@ int main()
     // Free the screen surface.
 
     SDL_FreeSurface(screen_surface);
-
-    return 0;
 }
