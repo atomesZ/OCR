@@ -14,9 +14,9 @@ int main()
 	int b = 0;
 	saveNetwork(net, "t");
 	double lrat = 0.1;
-	for(int i = 0; i < 100000; ++i)
+	for(int i = 0; i < 1000000; ++i)
 	{
-		lrat = 0.1;
+		lrat = 0.2;
 		a = rand();
 		b = rand();
 		if(a < RAND_MAX / 2)
@@ -62,13 +62,19 @@ int main()
 		do
 		{
 		feedforward(net);
+		//printNet(net);
+		printf("%i/1000000\n", i);
+	
 		//if(loss(net.n_outputs[net.num_neurons - 1], a + b == 1) < 1)
 		//	lrat = 0.1;
 		if(loss(net.n_outputs[net.num_neurons - 1], a + b == 1) < 0.1)
-			lrat = 0.01;
+			lrat = 0.02;
 		if(loss(net.n_outputs[net.num_neurons - 1], a + b == 1) < 0.01)
-			lrat = 0.001;
-		backprop(net, net.n_outputs[net.num_neurons - 1], a + b == 1, lrat);
+			lrat = 0.002;
+
+		double ou[] = { net.n_outputs[net.num_neurons - 1]};
+		double ex[] = { a + b == 1};
+		backprop(net, ou, ex, lrat);
 
 		}while(loss(net.n_outputs[net.num_neurons - 1], a + b == 1) > 0.001);
 	//	feedforward(net);

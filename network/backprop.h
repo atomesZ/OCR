@@ -21,7 +21,7 @@ double cost_prime_sum(double out,double expected,double weight);
 //double total_cost(Matrix out,Matrix in)
 double total_cost(double out,double expected);*/
 
-void backprop(Network N,double out,double expected,double LR);
+void backprop(Network N,double out[],double expected[],double LR);
 
 void XOR(Network N,double out,double expected);
 
