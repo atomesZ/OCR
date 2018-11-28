@@ -4,7 +4,7 @@
 
 double loss(double out,double expected)
 {
-    return (expected - out) * (expected - out) / 2;
+    return (expected - out) * (expected - out) ;
 }
 
 double derive_output(Network net, int n)
