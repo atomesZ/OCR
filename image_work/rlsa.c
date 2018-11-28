@@ -67,53 +67,50 @@ void wait_for_keypressed()
     } while(event.type != SDL_KEYUP);
 }
 
+void SDL_to_matrix(SDL_Surface *img, double mat[]) {
 
-SDL_Surface* rlsa(SDL_Surface *img) {
+	for(int x = 0; x < img->w; x++) {
+		for(int y = 0; y < img->h; y++) {
+			Uint32 pixel = get_pixel(img, x, y);
+			Uint8 r, g, b;
+			SDL_GetRGB(pixel, img->format, &r, &g, &b);
+			if (r == 0)
+				mat[x * img->w + y] = 1;
+			else
+				mat[x * img->w + y] = 0;
+			}
+	}			
+}
 
-	int hor_thres = 1000;
-       	int zero_count = 0;
-       	int one_flag = 0;
+void rlsa_l(SDL_Surface *img, double mat[]) {
+
+	int hor_thres = 10;
+	int zero_count = 0;
        	
 	for (int i = 0; i<(img->w); i++) {
 	 
 		for (int j = 0; j<(img->h); j++) {
 
-		       	Uint32 pixel = get_pixel(img, i, j);
-		       	Uint8 r, g, b;
-		       	SDL_GetRGB(pixel, img->format, &r, &g, &b);
-		       	
-			if (r == 255) {
+			if (mat[i * img->w + j] == 1) {
 
-			       	if (one_flag == 255) {
+				if (zero_count != 0) {
+					if (zero_count < hor_thres) {
+						for(int k = i - zero_count; k < i; k++) {
+						   mat[k * img->w + j] = 1;		
+						}
+					}
+					zero_count = 0;
+				}
+			}
+		}
 
-				       	if (zero_count <= hor_thres) {
+		zero_count = 0;
+}
 
-					       	for (int a = j-zero_count; a<=j; a++) {
 
-						       	Uint32 pixel = get_pixel(img, i, a);
-						       	Uint8 r, g, b;
-							r = 255, g = 255, b = 255;
-							pixel = SDL_MapRGB(img->format, r, g, b);
-							put_pixel(img, i, a, pixel);
-					       	}
-				       	} 
-					
-					else {
-					       	one_flag = 0;
-				       	}
-				       	zero_count = 0;
-			       	}
-			       	one_flag = 255;
-		       	}
-		       	else { 
-				if (one_flag == 0) {
-				       	zero_count = zero_count + 1;
-			       	}
-		       	}
-	       	}
-       	}
+void mat_to_SDL(double mat[], SDL_Surface *img) {
 
-	return img;
+		
 }
 
 
@@ -128,21 +125,25 @@ int main() {
 
 	// Load the image
 	image_surface = load_image("image_test/my_blackandwhite_image.bmp");
-       
+
 	// Display the image
 	screen_surface = display_image(image_surface);
+	
+	wait_for_keypressed();
+
+	image_surface = rlsa(image_surface);
 
 	// Update the surfaces	
 	update_surface(screen_surface, image_surface);
 	
-       	// Wait for a key to be pressed.
+    // Wait for a key to be pressed.
 	wait_for_keypressed();
 
-    	// Free the image surface.   
+    // Free the image surface.   
 	SDL_FreeSurface(image_surface);
-   
-       	// Free the screen surface.
-       	SDL_FreeSurface(screen_surface);
+	
+	// Free the screen surface.
+   	SDL_FreeSurface(screen_surface);
 
 
 	return 0;
