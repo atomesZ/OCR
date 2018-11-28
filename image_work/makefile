@@ -13,12 +13,12 @@ display:display.o
 grayscale: pixel_operations.o grayscale.o
 whiteandblack: pixel_operations.o whiteandblack.o
 rlsa: pixel_operations.o rlsa.o
-interface: interface.o display.o
+interface: interface.o display.o pixel_operations.o
 
 grayscale.o: pixel_operations.h
 whiteandblack.o: pixel_operations.h
 rlsa.o: pixel_operations.h
-interface: display.h grayscale.h
+interface: display.h pixel_operations.h
 
 clean:
 	${RM} *.o

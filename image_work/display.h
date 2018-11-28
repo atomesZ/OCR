@@ -10,5 +10,6 @@ SDL_Surface* display_image(SDL_Surface *img);
 void wait_for_keypressed();
 void display(char *file);
 void grayscale(char *file);
+void whiteandblack(char *file);
 
 #endif
