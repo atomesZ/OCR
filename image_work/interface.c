@@ -41,13 +41,13 @@ void pause()
 
                 // Black & White button
                 if (X > 206 && Y > 417 && X < 583 && Y < 495)
-		    whiteandblack("image_test/my_image.jpg");
+                    whiteandblack("image_test/my_image.jpg");
 
                 // Text Segmentation button
-                //if (X > 206 && Y > 496 && X < 583 && Y < 573)
+                if (X > 206 && Y > 496 && X < 583 && Y < 573)
 
                 // Text Recognition button
-                //if (X > 206 && Y > 573 && X < 583 && Y < 652)
+                if (X > 206 && Y > 573 && X < 583 && Y < 652)
                 
                 
                 break;           

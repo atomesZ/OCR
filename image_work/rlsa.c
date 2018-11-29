@@ -68,84 +68,179 @@ void wait_for_keypressed()
 }
 
 void SDL_to_matrix(SDL_Surface *img, double mat[]) {
-
-	for(int x = 0; x < img->w; x++) {
-		for(int y = 0; y < img->h; y++) {
-			Uint32 pixel = get_pixel(img, x, y);
-			Uint8 r, g, b;
-			SDL_GetRGB(pixel, img->format, &r, &g, &b);
-			if (r == 0)
-				mat[x * img->w + y] = 1;
-			else
-				mat[x * img->w + y] = 0;
-			}
-	}			
+    
+    for(int x = 0; x < img->w; x++) {
+        for(int y = 0; y < img->h; y++) {
+            Uint32 pixel = get_pixel(img, x, y);
+            Uint8 r, g, b;
+            SDL_GetRGB(pixel, img->format, &r, &g, &b);
+            if (r == 0)
+                mat[x * img->w + y] = 1;
+            else
+                mat[x * img->w + y] = 0;
+            }
+    }            
 }
 
-void rlsa_l(SDL_Surface *img, double mat[]) {
+//void rlsa_l(double mat[],size_t rows, size_t cols, size_t hor_thres) {
+//
+//    size_t zero_count = 0;
+//           
+//    for (size_t i = 0; i<rows; i++) {
+//     
+//        for (size_t j = 0; j<cols; j++) {
+//
+//            if (mat[i * cols + j] == 1) {
+//
+//               if (zero_count != 0) {
+//                    if (zero_count < hor_thres) {
+//                        for(size_t k = i - zero_count; k < i; k++) {
+//                           mat[k * cols + j] = 1;        
+//                       }
+//                    }
+//                    zero_count = 0;
+//                }
+//            }
+//        else 
+//        {
+//            zero_count += 1;
+//        }
+//        }
+//
+//        zero_count = 0;
+//}
 
-	int hor_thres = 10;
-	int zero_count = 0;
-       	
-	for (int i = 0; i<(img->w); i++) {
-	 
-		for (int j = 0; j<(img->h); j++) {
+//void rlsa_c (double mat[],size_t rows, size_t cols, size_t hor_thres)
+///{
+//  size_t zero_count = 0;
+//    
+//    for (size_t j = 0; j<cols; j++) {
+//    
+//       for (size_t i = 0; i<rows; i++) {
+//
+//            if (mat[i*cols+j] == 1) {
+//
+//                if (zero_count != 0) {
+//                    if (zero_count < hor_thres) {
+//                       for(size_t k = i - zero_count; k < i; k++) {
+//                           mat[i*cols+j] = 1;        
+//                        }
+//                    }
+//                   zero_count = 0;
+//                }
+//            }
+//        else 
+//        {
+//            zero_count += 1;
+//        }
+//        }
+//
+//        zero_count = 0;
+//    }
+//}
 
-			if (mat[i * img->w + j] == 1) {
+//void rlsa (double matL[], double matC[], size_t rows, size_t cols, double matRes[])
+//{
+//    for (size_t i = 0; i<rows ; i++)
+//    {
+//        for (size_t j = 0; j<cols; j++)
+//        {
+//            if ((matL[i*cols+j] == 1)&&(matC[i*cols+j] == 1))
+//            {
+//                matRes[i*cols+j] = 1;
+//            }
+//            else
+//            {
+//                matRes[i*cols+j] = 0;
+//            }
+//        }
+//    }
+//}
 
-				if (zero_count != 0) {
-					if (zero_count < hor_thres) {
-						for(int k = i - zero_count; k < i; k++) {
-						   mat[k * img->w + j] = 1;		
-						}
-					}
-					zero_count = 0;
-				}
-			}
-		}
+void print_mat(double mat[], int rows, int cols) {
 
-		zero_count = 0;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            printf("%f  ", mat[i * rows + j]);
+        }
+        printf("\n");
+    }
 }
 
+//void line (double mat[], size_t rows, size_t cols, size_t i, size_t j, size_t i2, size_t j2)
+//{
+//    while (mat[i * cols + j] == 0)
+//    {
+//        if (j < cols)
+//        {
+//            j+=1;
+//        }
+//        else 
+//        {
+//            i+=1;
+//            j=0;
+//        }
+//    }
+//    
+//    j2 = j;
+//    while ((j2 < cols)&&(mat[i* cols + j2] == 1))
+//    {
+//       j2+=1;
+//    }
+//    i2 = i;
+//    while ((i2 < rows)&&(mat[i2* cols + j2] == 1))
+//    {
+//        i2+=1;
+//    }
+//}
 
-void mat_to_SDL(double mat[], SDL_Surface *img) {
-
-		
-}
-
-
+//void reduc (double mat[], double matres[], size_t cols, size_t i, size_t i2, size_t j, size_t j2)
+//{
+//    for (size_t k = i; k<=i2; k++)
+//    {
+//        for(size_t l = j; l<=j2; l++)
+//       {
+//            matres[(k-i)*(j2-j)+(l-j)] = mat[k*cols+l];
+//        }
+//    }
+//}
 
 int main() {
-	
-	SDL_Surface* image_surface;
-	SDL_Surface* screen_surface;
+    
+    SDL_Surface* image_surface;
+    SDL_Surface* screen_surface;
 
-	// Initialize the SDL
-	init_sdl();
+    // Initialize the SDL
+    init_sdl();
 
-	// Load the image
-	image_surface = load_image("image_test/my_blackandwhite_image.bmp");
+    // Load the image
+    image_surface = load_image("image_test/my_blackandwhite_image.bmp");
 
-	// Display the image
-	screen_surface = display_image(image_surface);
-	
-	wait_for_keypressed();
+    double mat[image_surface->h * image_surface->w];
+    size_t rows = image_surface->h;
+    size_t cols = image_surface->w;
 
-	image_surface = rlsa(image_surface);
+    // Display the image
+    screen_surface = display_image(image_surface);
+    
+    wait_for_keypressed();
 
-	// Update the surfaces	
-	update_surface(screen_surface, image_surface);
-	
-    // Wait for a key to be pressed.
-	wait_for_keypressed();
+    SDL_to_matrix(image_surface, mat);
+    print_mat(mat, rows, cols);
 
-    // Free the image surface.   
-	SDL_FreeSurface(image_surface);
-	
-	// Free the screen surface.
-   	SDL_FreeSurface(screen_surface);
+    // Update the surfaces    
+    update_surface(screen_surface, image_surface);
+    
+        // Wait for a key to be pressed.
+    wait_for_keypressed();
+
+        // Free the image surface.   
+    SDL_FreeSurface(image_surface);
+    
+    // Free the screen surface.
+       SDL_FreeSurface(screen_surface);
 
 
-	return 0;
+    return 0;
 
 }
