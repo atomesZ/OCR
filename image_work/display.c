@@ -2,6 +2,7 @@
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
 #include "pixel_operations.h"
+#include "interface.h"
 
 void init_sdl()
 {
@@ -64,14 +65,15 @@ void wait_for_keypressed()
     do
     {
         SDL_PollEvent(&event);
-    } while(event.type != SDL_KEYDOWN);
+    } while(event.type != SDL_KEYDOWN && event.key.keysym.sym != SDLK_ESCAPE);
 
     // Wait for a key to be up.
 
     do
     {
         SDL_PollEvent(&event);
-    } while(event.type != SDL_KEYUP);
+    } while(event.type != SDL_KEYUP && event.key.keysym.sym != SDLK_ESCAPE);
+
 }
 
 void display(char *file)
@@ -86,16 +88,19 @@ void display(char *file)
     image_surface = load_image(file);
    
     // Display the image.
-    
     screen_surface = display_image(image_surface);
 
+    // Wait for a keystroke
+    wait_for_keypressed();
+
     // Free the image surface.
-    
     SDL_FreeSurface(image_surface);
 
-    // Free the screen surface.
-
+    // Free the screen surface
     SDL_FreeSurface(screen_surface);
+    
+    // Return to the main interface menu
+    interface();
 }
 
 void grayscale(char *file)
@@ -136,13 +141,17 @@ void grayscale(char *file)
     // Update the surfaces
     update_surface(screen_surface, image_surface);
 
-    // Free the image surface.
-    
+    // Wait for a keystroke
+    wait_for_keypressed();
+
+    // Free the image surface.    
     SDL_FreeSurface(image_surface);
 
     // Free the screen surface.
-
     SDL_FreeSurface(screen_surface);
+
+    // Return to main interface menu
+    interface();
 }
 
 Uint32 otsu(SDL_Surface* image_surface) {
@@ -255,16 +264,23 @@ void whiteandblack(char *path)
 	    }
     }
 
-    // Save the imgae
+    // Save the image to "myblackandwhite_image.bmp"
     SDL_SaveBMP(image_surface, "image_test/my_blackandwhite_image.bmp");
 
     // Update the surfaces
     update_surface(screen_surface, image_surface);
 
+    // Wait for a keystroke
+    wait_for_keypressed();
 
     // Free the image surface.
     SDL_FreeSurface(image_surface);
 
     // Free the screen surface.
     SDL_FreeSurface(screen_surface);
+
+    // Return to main interface menu
+    interface();
 }
+
+

@@ -27,6 +27,19 @@ void pause()
                 continuer = 0;
                 break;
 
+            case SDL_KEYDOWN:
+                switch(event.key.keysym.sym) {
+                    
+                    case SDLK_ESCAPE:
+                    continuer = 0;
+                    SDL_Quit();
+                    break;
+              
+                    default:
+                    break;
+                }
+            break;
+
             case SDL_MOUSEBUTTONDOWN:
                 X = event.button.x;
                 Y = event.button.y;
@@ -48,17 +61,14 @@ void pause()
 
                 // Text Recognition button
                 if (X > 206 && Y > 573 && X < 583 && Y < 652)
-                
-                
+                             
                 break;           
         }
     }
 }
 
-int main() 
+void interface() 
 {
-    SDL_Init(SDL_INIT_VIDEO);
-
     // Image of the interface
     SDL_Surface *interface = IMG_Load("interface.png");
 
@@ -75,6 +85,4 @@ int main()
     
     pause();
     SDL_Quit();
-
-    return 0;
 }
