@@ -202,3 +202,98 @@ void printNet(Network net)
 	printf("#######################################################\n");
 
 }
+
+int num_errors(Network net)
+{
+	int max = 946;
+	int dim = 32;
+	int nbfails = 0;//Init the number of errors
+	FILE *file;//declare file
+	file = fopen("data_set", "r");//open file to read
+	int ex;
+
+	for(int i = 0; i < max; ++i)
+	{
+		for(int h = 0; h < dim; ++h)
+		{
+			for(int j = 0; j < dim; ++j)
+			{
+				net.n_outputs[h*dim + j] = (int)fgetc(file) - 48;
+			}
+
+			fgetc(file);
+		}
+		ex = (int)fgetc(file) - 48;
+		fgetc(file);
+
+		feedforward(net);
+
+		if(net.n_outputs[net.num_neurons - net.sizes[2] + ex] < 0.1)
+		{
+			++nbfails;
+		}
+	}
+
+	fclose(file);
+
+	return nbfails;
+}
+
+void train(Network net)
+{
+	FILE  *file;//declare file
+
+	double cost;
+	double lrat;
+	int max = 946;
+	int dim = 32;
+	int b = 1;
+	for(int a = 0; a < b; ++a)
+	{
+	file = fopen("data_set", "r");//open file to read
+	for(int i = 1; i <= max; ++i)
+	{
+		lrat = 0.2;
+		for(int h = 0; h < dim; ++h)
+		{
+			for(int j = 0; j < dim; ++j)
+			{
+				net.n_outputs[h*dim + j] = (int)fgetc(file) - 48;
+			}
+			fgetc(file);
+		}
+		int ex = (int)fgetc(file) - 48;
+		net.expected[ex] = 1; 
+		fgetc(file);
+		
+		for(int c = 0; c < 7; ++c)
+			printf("\b");
+		printf("%i/%i", max*a + i, max*b);
+
+		do
+		{
+			feedforward(net);
+			
+			cost = 0;
+			for(int k = 0; k < 10; ++k)
+			{
+				cost += loss(net.n_outputs[net.num_neurons - net.sizes[net.num_layers - 1] + k], net.expected[k]);
+			}
+			cost /= 10;
+
+			if(cost < 0.1)
+				lrat = 0.02;
+			if(cost < 0.01)
+				lrat = 0.002;
+
+			backprop(net, &net.n_outputs[net.num_neurons - net.sizes[net.num_layers - 1]], net.expected, lrat);
+
+		}while(cost > 0.001);
+		
+		net.expected[ex] = 0;
+	}
+	fclose(file);
+	}
+	saveNetwork(net, "aybe");
+	printf("\n");
+}

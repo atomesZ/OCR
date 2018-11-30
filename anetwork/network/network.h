@@ -5,6 +5,7 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include<math.h>
+#include<unistd.h>
 
 typedef struct Network Network;
 
@@ -30,5 +31,7 @@ double sigmoid_prime(double z);
 double dot(double *w, double *n_outputs, int len, int ifo, int ifw);
 void feedforward(Network net);
 void printNet(Network net);
+int num_errors(Network net);
+void train(Network net);
 
 #endif
