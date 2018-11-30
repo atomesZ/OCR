@@ -45,6 +45,9 @@ void saveNetwork(Network net, char* filename)
     FILE *file;//declare file
     file = fopen(filename, "w+");//create or rewrite file
 
+	if(file == NULL)
+		errx(1, "Could not open file");
+
     fprintf(file, "%d\n", net.num_layers);//num_layers
 
     for (int i = 0; i < net.num_layers; ++i)//*sizes
@@ -72,6 +75,8 @@ Network loadNetwork(char* filename)
 	Network net;//declare network
 
 	file = fopen(filename, "r");//open file to read
+	if(file == NULL)
+		errx(1, "Could not open file");
 
 	fscanf(file, "%d\n", &net.num_layers);//get num_layers
     net.sizes = malloc(sizeof(int) * net.num_layers);//allocate memory for *sizes
@@ -210,6 +215,8 @@ int num_errors(Network net)
 	int nbfails = 0;//Init the number of errors
 	FILE *file;//declare file
 	file = fopen("data_set", "r");//open file to read
+	if(file == NULL)
+		errx(1, "Could not open file");
 	int ex;
 
 	for(int i = 0; i < max; ++i)
@@ -248,52 +255,56 @@ void train(Network net)
 	int max = 946;
 	int dim = 32;
 	int b = 1;
+	file = fopen("data_set", "r");//open file to read
 	for(int a = 0; a < b; ++a)
 	{
-	file = fopen("data_set", "r");//open file to read
-	for(int i = 1; i <= max; ++i)
-	{
-		lrat = 0.2;
-		for(int h = 0; h < dim; ++h)
+		//file = fopen("data_set", "r");//open file to read
+		if(file == NULL)
+			errx(1, "Could not open file");
+		for(int i = 1; i <= max; ++i)
 		{
-			for(int j = 0; j < dim; ++j)
+			lrat = 0.2;
+			for(int h = 0; h < dim; ++h)
 			{
-				net.n_outputs[h*dim + j] = (int)fgetc(file) - 48;
+				for(int j = 0; j < dim; ++j)
+				{
+					net.n_outputs[h*dim + j] = (int)fgetc(file) - 48;
+				}
+				fgetc(file);
 			}
+			int ex = (int)fgetc(file) - 48;
+			net.expected[ex] = 1; 
 			fgetc(file);
-		}
-		int ex = (int)fgetc(file) - 48;
-		net.expected[ex] = 1; 
-		fgetc(file);
 		
-		for(int c = 0; c < 7; ++c)
-			printf("\b");
-		printf("%i/%i", max*a + i, max*b);
+			for(int c = 0; c < 7; ++c)
+				printf("\b");
+			printf("%i/%i", max*a + i, max*b);
 
-		do
-		{
-			feedforward(net);
-			
-			cost = 0;
-			for(int k = 0; k < 10; ++k)
+			do
 			{
-				cost += loss(net.n_outputs[net.num_neurons - net.sizes[net.num_layers - 1] + k], net.expected[k]);
-			}
-			cost /= 10;
+				feedforward(net);
+			
+				cost = 0;
+				for(int k = 0; k < 10; ++k)
+				{
+					cost += loss(net.n_outputs[net.num_neurons - net.sizes[net.num_layers - 1] + k], net.expected[k]);
+				}
+				cost /= 10;
 
-			if(cost < 0.1)
-				lrat = 0.02;
-			if(cost < 0.01)
-				lrat = 0.002;
+				if(cost < 0.1)
+					lrat = 0.02;
+				if(cost < 0.01)
+					lrat = 0.002;
 
-			backprop(net, &net.n_outputs[net.num_neurons - net.sizes[net.num_layers - 1]], net.expected, lrat);
+				backprop(net, &net.n_outputs[net.num_neurons - net.sizes[net.num_layers - 1]], net.expected, lrat);
 
-		}while(cost > 0.001);
+			}while(cost > 0.001);
 		
-		net.expected[ex] = 0;
+			net.expected[ex] = 0;
+		}
+	rewind(file);
 	}
 	fclose(file);
-	}
 	saveNetwork(net, "aybe");
 	printf("\n");
 }

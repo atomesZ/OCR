@@ -6,6 +6,7 @@
 #include<stdio.h>
 #include<math.h>
 #include<unistd.h>
+#include<err.h>
 
 typedef struct Network Network;
 
