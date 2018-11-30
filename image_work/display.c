@@ -56,13 +56,38 @@ SDL_Surface* display_image(SDL_Surface *img)
     return screen;
 }
 
-void wait_for_keypressed()
+int wait_for_keypressed()
 {
     SDL_Event event;
+    int continuer = 1;
 
+    while (continuer) {
+        
+        SDL_WaitEvent(&event);
+        SDL_PollEvent(&event);
+
+        switch(event.type) {
+
+            case SDL_KEYDOWN:
+            switch(event.key.keysym.sym) {
+
+                case SDLK_ESCAPE:
+                return 1;
+                break;
+
+                default:
+		return 0;
+                break;
+            }
+        }
+    }
+
+    return 0;
+        
+    
     // Wait for a key to be down.
 
-    do
+    /* do
     {
         SDL_PollEvent(&event);
     } while(event.type != SDL_KEYDOWN && event.key.keysym.sym != SDLK_ESCAPE);
@@ -72,7 +97,7 @@ void wait_for_keypressed()
     do
     {
         SDL_PollEvent(&event);
-    } while(event.type != SDL_KEYUP && event.key.keysym.sym != SDLK_ESCAPE);
+    } while(event.type != SDL_KEYUP && event.key.keysym.sym != SDLK_ESCAPE); */
 
 }
 
@@ -91,16 +116,22 @@ void display(char *file)
     screen_surface = display_image(image_surface);
 
     // Wait for a keystroke
-    wait_for_keypressed();
+    int boolean = wait_for_keypressed();
 
-    // Free the image surface.
-    SDL_FreeSurface(image_surface);
-
-    // Free the screen surface
-    SDL_FreeSurface(screen_surface);
+    if (boolean)
+	SDL_Quit();
     
-    // Return to the main interface menu
-    interface();
+    else {
+        
+        // Free the image surface.
+        SDL_FreeSurface(image_surface);
+
+        // Free the screen surface
+        SDL_FreeSurface(screen_surface);
+    
+        // Return to the main interface menu
+        interface();
+    }
 }
 
 void grayscale(char *file)
@@ -142,16 +173,22 @@ void grayscale(char *file)
     update_surface(screen_surface, image_surface);
 
     // Wait for a keystroke
-    wait_for_keypressed();
+    int boolean = wait_for_keypressed();
 
-    // Free the image surface.    
-    SDL_FreeSurface(image_surface);
+    if (boolean)
+	SDL_Quit();
+    
+    else {
+        
+        // Free the image surface.
+        SDL_FreeSurface(image_surface);
 
-    // Free the screen surface.
-    SDL_FreeSurface(screen_surface);
-
-    // Return to main interface menu
-    interface();
+        // Free the screen surface
+        SDL_FreeSurface(screen_surface);
+    
+        // Return to the main interface menu
+        interface();
+    }
 }
 
 Uint32 otsu(SDL_Surface* image_surface) {
@@ -271,16 +308,22 @@ void whiteandblack(char *path)
     update_surface(screen_surface, image_surface);
 
     // Wait for a keystroke
-    wait_for_keypressed();
+    int boolean = wait_for_keypressed();
 
-    // Free the image surface.
-    SDL_FreeSurface(image_surface);
+    if (boolean)
+	SDL_Quit();
+    
+    else {
+        
+        // Free the image surface.
+        SDL_FreeSurface(image_surface);
 
-    // Free the screen surface.
-    SDL_FreeSurface(screen_surface);
-
-    // Return to main interface menu
-    interface();
+        // Free the screen surface
+        SDL_FreeSurface(screen_surface);
+    
+        // Return to the main interface menu
+        interface();
+    }
 }
 
 

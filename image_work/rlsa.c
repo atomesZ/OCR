@@ -67,19 +67,19 @@ void wait_for_keypressed()
     } while(event.type != SDL_KEYUP);
 }
 
-void SDL_to_matrix(SDL_Surface *img, double mat[]) {
+void SDL_to_matrix(SDL_Surface *img, double mat) {
     
-    for(int x = 0; x < img->w; x++) {
-        for(int y = 0; y < img->h; y++) {
+    for(int x = 0; x < img->w; ++x) {
+        for(int y = 0; y < img->h; ++y) {
             Uint32 pixel = get_pixel(img, x, y);
             Uint8 r, g, b;
             SDL_GetRGB(pixel, img->format, &r, &g, &b);
-            if (r == 0)
+            if (r == 1)
                 mat[x * img->w + y] = 1;
             else
                 mat[x * img->w + y] = 0;
             }
-    }            
+    }
 }
 
 //void rlsa_l(double mat[],size_t rows, size_t cols, size_t hor_thres) {
@@ -216,31 +216,33 @@ int main() {
     // Load the image
     image_surface = load_image("image_test/my_blackandwhite_image.bmp");
 
+    // Matrix
+    double *mat;
+    mat = malloc(sizeof(double) * image_surface->h * image_surface->w);
+
     double mat[image_surface->h * image_surface->w];
-    size_t rows = image_surface->h;
-    size_t cols = image_surface->w;
+    //size_t rows = image_surface->h;
+    //size_t cols = image_surface->w;
 
     // Display the image
     screen_surface = display_image(image_surface);
     
     wait_for_keypressed();
 
-    SDL_to_matrix(image_surface, mat);
-    print_mat(mat, rows, cols);
+    SDL_to_matrix(image_surface, &mat);
+    //print_mat(mat, rows, cols);
 
     // Update the surfaces    
     update_surface(screen_surface, image_surface);
     
-        // Wait for a key to be pressed.
+    // Wait for a key to be pressed.
     wait_for_keypressed();
 
-        // Free the image surface.   
+    // Free the image surface.   
     SDL_FreeSurface(image_surface);
     
     // Free the screen surface.
-       SDL_FreeSurface(screen_surface);
-
+    SDL_FreeSurface(screen_surface);
 
     return 0;
-
 }

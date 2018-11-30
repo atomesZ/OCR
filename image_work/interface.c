@@ -32,11 +32,12 @@ void pause()
                     
                     case SDLK_ESCAPE:
                     continuer = 0;
-                    SDL_Quit();
+		    SDL_Quit();
                     break;
-              
-                    default:
-                    break;
+
+		    default:
+		    continuer = 0;
+		    break;
                 }
             break;
 
@@ -45,22 +46,28 @@ void pause()
                 Y = event.button.y;
                 
                 // Display button 
-                if (X > 206 && Y > 260 && X < 583 && Y < 338) 
+                if (X > 206 && Y > 260 && X < 583 && Y < 338) {
                     display("image_test/my_image.jpg");
+		    continuer = 0;
+		}
                 
                 // Grayscale button
-                if (X > 206 && Y > 340 && X < 583 && Y < 416)
+                else if (X > 206 && Y > 340 && X < 583 && Y < 416) {
                     grayscale("image_test/my_image.jpg");
+		    continuer = 0;
+		}
 
                 // Black & White button
-                if (X > 206 && Y > 417 && X < 583 && Y < 495)
+                else if (X > 206 && Y > 417 && X < 583 && Y < 495) {
                     whiteandblack("image_test/my_image.jpg");
+		    continuer = 0;
+		}
 
                 // Text Segmentation button
-                if (X > 206 && Y > 496 && X < 583 && Y < 573)
+                else if (X > 206 && Y > 496 && X < 583 && Y < 573) { }
 
                 // Text Recognition button
-                if (X > 206 && Y > 573 && X < 583 && Y < 652)
+                else if (X > 206 && Y > 573 && X < 583 && Y < 652) { }
                              
                 break;           
         }
