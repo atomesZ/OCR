@@ -89,6 +89,10 @@ void display(char *file)
     
     screen_surface = display_image(image_surface);
 
+    // Wait for a key to be pressed.
+
+    wait_for_keypressed();
+
     // Free the image surface.
     
     SDL_FreeSurface(image_surface);
@@ -97,6 +101,7 @@ void display(char *file)
 
     SDL_FreeSurface(screen_surface);
 }
+
 
 void grayscale(char *file)
 {
@@ -135,6 +140,10 @@ void grayscale(char *file)
     
     // Update the surfaces
     update_surface(screen_surface, image_surface);
+
+    // Wait for a key to be pressed.
+
+    wait_for_keypressed();
 
     // Free the image surface.
     
@@ -261,6 +270,8 @@ void whiteandblack(char *path)
     // Update the surfaces
     update_surface(screen_surface, image_surface);
 
+    // Wait for a key to be pressed.
+    wait_for_keypressed();
 
     // Free the image surface.
     SDL_FreeSurface(image_surface);
