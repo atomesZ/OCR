@@ -210,11 +210,11 @@ void printNet(Network net)
 
 int num_errors(Network net)
 {
-	int max = 946;
+	int max = 1;
 	int dim = 32;
 	int nbfails = 0;//Init the number of errors
 	FILE *file;//declare file
-	file = fopen("data_set", "r");//open file to read
+	file = fopen("ldata_set", "r");//open file to read
 	if(file == NULL)
 		errx(1, "Could not open file");
 	int ex;
@@ -238,6 +238,23 @@ int num_errors(Network net)
 		if(net.n_outputs[net.num_neurons - net.sizes[2] + ex] < 0.1)
 		{
 			++nbfails;
+			
+			for(int h = 0; h < dim; ++h)
+			{
+				for(int j = 0; j < dim; ++j)
+				{
+					printf("%i", (int)net.n_outputs[h*dim + j]);
+				}
+				printf("\n");
+			}
+
+			
+			for(int e = 0; e < 10; ++e)
+			{
+				printf("%lf ",net.n_outputs[net.num_neurons - net.sizes[2] + e]);
+			}
+			printf("%i", ex);	
+			printf("\n");
 		}
 	}
 
@@ -252,17 +269,20 @@ void train(Network net)
 
 	double cost;
 	double lrat;
-	int max = 946;
+	long max = 946;
 	int dim = 32;
-	int b = 1;
+	long b = 25;
+	srand(time(NULL));
 	file = fopen("data_set", "r");//open file to read
-	for(int a = 0; a < b; ++a)
+	for(long a = 0; a < b; ++a)
 	{
 		//file = fopen("data_set", "r");//open file to read
 		if(file == NULL)
 			errx(1, "Could not open file");
-		for(int i = 1; i <= max; ++i)
+		//for(int i = 1; i <= max; ++i)
 		{
+			long d = rand() % max * (dim*dim + dim + 2);
+			fseek(file, d,SEEK_SET);
 			lrat = 0.2;
 			for(int h = 0; h < dim; ++h)
 			{
@@ -276,9 +296,9 @@ void train(Network net)
 			net.expected[ex] = 1; 
 			fgetc(file);
 		
-			for(int c = 0; c < 7; ++c)
+			for(int c = 0; c < 15; ++c)
 				printf("\b");
-			printf("%i/%i", max*a + i, max*b);
+			printf("%ld/%ld", a, b);
 
 			do
 			{
@@ -302,7 +322,7 @@ void train(Network net)
 		
 			net.expected[ex] = 0;
 		}
-	rewind(file);
+	//rewind(file);
 	}
 	fclose(file);
 	saveNetwork(net, "aybe");
