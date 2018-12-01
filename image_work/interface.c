@@ -47,19 +47,19 @@ void pause()
                 
                 // Display button 
                 if (X > 206 && Y > 260 && X < 583 && Y < 338) {
-                    display("image_test/my_image.jpg");
+                    display("image_test/my_image02.jpg");
 		    continuer = 0;
 		}
                 
                 // Grayscale button
                 else if (X > 206 && Y > 340 && X < 583 && Y < 416) {
-                    grayscale("image_test/my_image.jpg");
+                    grayscale("image_test/my_image02.jpg");
 		    continuer = 0;
 		}
 
                 // Black & White button
                 else if (X > 206 && Y > 417 && X < 583 && Y < 495) {
-                    whiteandblack("image_test/my_image.jpg");
+                    whiteandblack("image_test/my_image02.jpg");
 		    continuer = 0;
 		}
 
