@@ -234,8 +234,20 @@ int num_errors(Network net, char* filename)
 		fgetc(file);
 
 		feedforward(net);
+		
+		int imax = 0;
+		double max = net.n_outputs[net.num_neurons - net.sizes[2]];
+		for(int e = 1; e < net.sizes[2]; ++e)
+		{
+			if(net.n_outputs[net.num_neurons - net.sizes[2] + e] > max)
+			{
+				max = net.n_outputs[net.num_neurons - net.sizes[2] + e];
+				imax = e;
+			}
+		}
+		
 
-		if(net.n_outputs[net.num_neurons - net.sizes[2] + ex] < 0.1)
+		if(imax != ex)
 		{
 			++nbfails;
 			
@@ -309,7 +321,7 @@ void train(Network net, char* filename)
 	double lrat;
 	long max = 946;
 	int dim = 32;
-	long b = 2500;
+	long b = 30000;
 	srand(time(NULL));
 	file = fopen(filename, "r");//open file to read
 	for(long a = 1; a <= b; ++a)
@@ -347,7 +359,7 @@ void train(Network net, char* filename)
 				{
 					cost += loss(net.n_outputs[net.num_neurons - net.sizes[net.num_layers - 1] + k], net.expected[k]);
 				}
-				//cost /= 10;
+				cost /= 10;
 
 				if(cost < 0.1)
 					lrat = 0.02;
@@ -356,7 +368,7 @@ void train(Network net, char* filename)
 
 				backprop(net, &net.n_outputs[net.num_neurons - net.sizes[net.num_layers - 1]], net.expected, lrat);
 
-			}while(cost > 0.001);
+			}while(cost > 0.01 ||(cost > 0.001 && a < 2 * b / 3));
 		
 			net.expected[ex] = 0;
 		}
