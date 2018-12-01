@@ -321,7 +321,7 @@ void train(Network net, char* filename)
 	double lrat;
 	long max = 946;
 	int dim = 32;
-	long b = 30000;
+	long b = 50000;
 	srand(time(NULL));
 	file = fopen(filename, "r");//open file to read
 	for(long a = 1; a <= b; ++a)
