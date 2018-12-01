@@ -32,7 +32,8 @@ double sigmoid_prime(double z);
 double dot(double *w, double *n_outputs, int len, int ifo, int ifw);
 void feedforward(Network net);
 void printNet(Network net);
-int num_errors(Network net);
-void train(Network net);
+int num_errors(Network net, char* filename);
+void readtxt(Network net, char* filename, char* s, int num_char);
+void train(Network net, char* filename);
 
 #endif

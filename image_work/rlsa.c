@@ -260,6 +260,29 @@ void print_mat(int* mat, int rows, int cols) {
 //    }
 //}
 
+void create_dataset(char* filename, double *m, char value)
+{
+	FILE *file;//declare file
+	file = fopen(filename, "a");//create file or add
+
+	int dim = 28;
+
+	if(file == NULL)
+		errx(1, "Could not open file");
+
+	for(int h = 0; h < dim; ++h)
+	{
+		for(int j = 0; j < dim; ++j)
+		{
+			fputc((int)m[h*dim + j] + 48, file);
+		}
+		fputc((int)"\n", file);
+	}
+	fputc((int)value, file);
+	fputc((int)"\n", file);
+	fclose(file);
+}
+
 int main() {
     
     SDL_Surface* image_surface;

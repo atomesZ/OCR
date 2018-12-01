@@ -208,13 +208,13 @@ void printNet(Network net)
 
 }
 
-int num_errors(Network net)
+int num_errors(Network net, char* filename)
 {
-	int max = 1;
+	int max = 946;
 	int dim = 32;
 	int nbfails = 0;//Init the number of errors
 	FILE *file;//declare file
-	file = fopen("ldata_set", "r");//open file to read
+	file = fopen(filename, "r");//open file to read
 	if(file == NULL)
 		errx(1, "Could not open file");
 	int ex;
@@ -249,7 +249,7 @@ int num_errors(Network net)
 			}
 
 			
-			for(int e = 0; e < 10; ++e)
+			for(int e = 0; e < net.sizes[2]; ++e)
 			{
 				printf("%lf ",net.n_outputs[net.num_neurons - net.sizes[2] + e]);
 			}
@@ -263,7 +263,45 @@ int num_errors(Network net)
 	return nbfails;
 }
 
-void train(Network net)
+void readtxt(Network net, char* filename, char* s, int num_char)
+{
+	FILE  *file;//declare file
+	file = fopen(filename, "r");//open file to read
+	
+	int dim = 32;
+	for(int i = 0; i < num_char; ++i)
+	{
+		for(int h = 0; h < dim; ++h)
+		{
+			for(int j = 0; j < dim; ++j)
+			{
+				net.n_outputs[h*dim + j] = (int)fgetc(file) - 48;
+			}
+
+			fgetc(file);
+		}
+		fgetc(file);//out the value
+		fgetc(file);//out "\n"
+
+		feedforward(net);
+		
+		int imax = 0;
+		double max = net.n_outputs[net.num_neurons - net.sizes[2]];
+		for(int e = 1; e < net.sizes[2]; ++e)
+		{
+			if(net.n_outputs[net.num_neurons - net.sizes[2] + e] > max)
+			{
+				max = net.n_outputs[net.num_neurons - net.sizes[2] + e];
+				imax = e;
+			}
+		}
+		
+		s[i] = imax + 48;//33 pour OCR
+	}
+	s[num_char] = 0;
+}
+
+void train(Network net, char* filename)
 {
 	FILE  *file;//declare file
 
@@ -271,10 +309,10 @@ void train(Network net)
 	double lrat;
 	long max = 946;
 	int dim = 32;
-	long b = 25;
+	long b = 2500;
 	srand(time(NULL));
-	file = fopen("data_set", "r");//open file to read
-	for(long a = 0; a < b; ++a)
+	file = fopen(filename, "r");//open file to read
+	for(long a = 1; a <= b; ++a)
 	{
 		//file = fopen("data_set", "r");//open file to read
 		if(file == NULL)
@@ -309,7 +347,7 @@ void train(Network net)
 				{
 					cost += loss(net.n_outputs[net.num_neurons - net.sizes[net.num_layers - 1] + k], net.expected[k]);
 				}
-				cost /= 10;
+				//cost /= 10;
 
 				if(cost < 0.1)
 					lrat = 0.02;
