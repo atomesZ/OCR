@@ -137,26 +137,36 @@ void rlsa_SDL(SDL_Surface* img, int thrs) {
 }
 
 void rlsa_SDL2(SDL_Surface* img, int thrs) {
-    
+   
+    // Compteur de zéros
     int zero_count = 0;
     for (int y = 0; y < img->h; ++y) {
 
+        // Reset du compteur car passage à la ligne suivante
         zero_count = 0;
         for (int x = 0; x < img->w; ++x) {
-
+            
+            // Récupération du pixel
             Uint32 pixel = get_pixel(img, x, y);
             Uint8 r, g, b;
             SDL_GetRGB(pixel, img->format, &r, &g, &b);
-            if (r == 255) {
 
+            // Cas du pixel noir
+            if (r == 0) {
+                
+                // Cas du nombre de zéros rencontrés inférieur au seuil
                 if (zero_count < thrs) {
                     for (int z = x - zero_count; z < x; ++z) {
                         pixel = SDL_MapRGB(img->format, 0, 0, 0);
                         put_pixel(img, z, y, pixel);
                     }
                 }
+
+                else
+                    zero_count = 0;
             }
 
+            // Sinon on incrémente le compteur de 0
             else {
                 ++zero_count;
             }
@@ -286,6 +296,9 @@ void create_dataset(char* filename, double *m, char value)
 int main() {
     
     SDL_Surface* image_surface;
+    SDL_Surface* result;
+    
+    result->w = 28, result->h = 28;
     SDL_Surface* screen_surface;
 
     // Initialize the SDL
@@ -293,23 +306,24 @@ int main() {
 
     // Load the image
     image_surface = load_image("image_test/my_blackandwhite_image.bmp");
+    SDL_SoftStretch(image_surface, NULL, result, NULL);
 
     // Matrix
     int *mat;
-    mat = malloc(sizeof(int) * image_surface->h * image_surface->w);
+    mat = malloc(sizeof(int) * result->h * result->w);
 
-    size_t rows = image_surface->h;
-    size_t cols = image_surface->w;
+    size_t rows = result->h;
+    size_t cols = result->w;
 
     // Display the image
     screen_surface = display_image(image_surface);
     
     wait_for_keypressed();
 
-    SDL_to_matrix(image_surface, mat);
+    SDL_to_matrix(result, mat);
     print_mat(mat, rows, cols);
     printf("---------------------------------------------------------------------------------------\n");
-    rlsa_SDL2(image_surface, 100);
+    rlsa_SDL2(image_surface, 500);
     display_image(image_surface);
 
     free(mat);
