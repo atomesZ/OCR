@@ -82,7 +82,7 @@ void SDL_to_matrix(SDL_Surface *img, int* mat) {
     }
 }
 
-void rlsa_l(int* mat, size_t rows, size_t cols, size_t hor_thres) {
+/* void rlsa_l(int* mat, size_t rows, size_t cols, size_t hor_thres) {
 
     size_t zero_count = 0;
            
@@ -106,7 +106,7 @@ void rlsa_l(int* mat, size_t rows, size_t cols, size_t hor_thres) {
         }
         zero_count = 0;
     }
-}
+}*/
 
 void rlsa_SDLup(SDL_Surface* img, int thrs) {
 
@@ -138,17 +138,23 @@ void rlsa_SDLup(SDL_Surface* img, int thrs) {
 
 void rlsa_SDLdown(SDL_Surface* img, int thrs) {
 
+    // Zero counter
     int zero_count = 0;
     for (int x = 0; x < img->w - 1; ++x) {
 
+        // Reset counter because moving to next column
         zero_count = 0;
         for (int y = img->h - 1; y > 1; --y) {
 
+            // Recovering the pixel
             Uint32 pixel = get_pixel(img, x, y);
             Uint8 r, g, b;
             SDL_GetRGB(pixel, img->format, &r, &g, &b);
+
+            // Black pixel case
             if (r == 255) {
 
+                // Zero counter under threshold
                 if (zero_count < thrs) {
                     for (int z = y + zero_count; z > y; --z) {
                         pixel = SDL_MapRGB(img->format, 0, 0, 0);
@@ -157,6 +163,7 @@ void rlsa_SDLdown(SDL_Surface* img, int thrs) {
                 }
             }
 
+            // White pixel case
             else {
                 ++zero_count;
             }
@@ -166,23 +173,23 @@ void rlsa_SDLdown(SDL_Surface* img, int thrs) {
 
 void rlsa_SDLleft(SDL_Surface* img, int thrs) {
    
-    // Compteur de zéros
+    // Zero counter
     int zero_count = 0;
     for (int y = 0; y < img->h - 1; ++y) {
 
-        // Reset du compteur car passage à la ligne suivante
+        // Reset counter because moving to next line 
         zero_count = 0;
         for (int x = 0; x < img->w - 1; ++x) {
             
-            // Récupération du pixel
+            // Recovering the pixel 
             Uint32 pixel = get_pixel(img, x, y);
             Uint8 r, g, b;
             SDL_GetRGB(pixel, img->format, &r, &g, &b);
 
-            // Cas du pixel noir
+            // Black pixel case
             if (r == 0) {
                 
-                // Cas du nombre de zéros rencontrés inférieur au seuil
+                // Zero counter under threshold
                 if (zero_count < thrs) {
                     for (int z = x - zero_count; z < x; ++z) {
                         pixel = SDL_MapRGB(img->format, 0, 0, 0);
@@ -194,7 +201,7 @@ void rlsa_SDLleft(SDL_Surface* img, int thrs) {
                     zero_count = 0;
             }
 
-            // Sinon on incrémente le compteur de 0
+            // White pixel case
             else {
                 ++zero_count;
             }
@@ -205,23 +212,23 @@ void rlsa_SDLleft(SDL_Surface* img, int thrs) {
 
 void rlsa_SDLright(SDL_Surface* img, int thrs) {
    
-    // Compteur de zéros
+    // Zero counter
     int zero_count = 0;
     for (int y = 0; y < img->h - 1; ++y) {
 
-        // Reset du compteur car passage à la ligne suivante
+        // Reset counter because moving to next column
         zero_count = 0;
         for (int x = img->w - 1; x > 1; --x) {
             
-            // Récupération du pixel
+            // Recovering the pixel
             Uint32 pixel = get_pixel(img, x, y);
             Uint8 r, g, b;
             SDL_GetRGB(pixel, img->format, &r, &g, &b);
 
-            // Cas du pixel noir
+            // Black pixel case
             if (r == 0) {
                 
-                // Cas du nombre de zéros rencontrés inférieur au seuil
+                // Zero counter under threshold
                 if (zero_count < thrs) {
                     for (int z = x + zero_count; z > x; --z) {
                         pixel = SDL_MapRGB(img->format, 0, 0, 0);
@@ -233,7 +240,7 @@ void rlsa_SDLright(SDL_Surface* img, int thrs) {
                     zero_count = 0;
             }
 
-            // Sinon on incrémente le compteur de 0
+            // White pixel case
             else {
                 ++zero_count;
             }
@@ -360,6 +367,50 @@ void print_mat(int* mat, int rows, int cols) {
 //        }
 //    }
 //}
+
+/*void resize (SDL_Surface* img1, SDL_Surface* imgr, float pas)
+{
+    float res = 0;
+    float test = 0;
+    for (int x = 0; x<img2 -> h; ++x)
+    {
+        for (int y = 0; y<img2->w; ++y)
+        {
+
+            res= y*pas;
+            test = res;
+            while (test >= 1)
+            {
+                test -=1;
+            }
+            if (test == 0)
+            {
+                Uint32 pixel1 = get_pixel(img1, x, res);
+                       Uint8 r1, g1, b1;
+                       SDL_GetRGB(pixel1, img1->format, &r1, &g1, &b1);
+
+                Uint32 pixel = SDL_MapRGB(img1->format, r1, r1, r1);
+                            put_pixel(imgr, x, y, pixel);
+
+            }
+            else
+            {
+                Uint32 pixel1 = get_pixel(img1, x, (res-test));
+                        Uint8 r1, g1, b1;
+                        SDL_GetRGB(pixel1, img->format, &r1, &g1, &b1);
+
+                Uint32 pixel2 = get_pixel(img1, x, (res+(1-test)));
+                       Uint8 r2, g2, b2;
+                       SDL_GetRGB(pixel2, img->format, &r2, &g2, &b2);
+
+                float r = r1*(1-test) + r2*test
+                pixel = SDL_MapRGB(img->format, r, r, r);
+                            put_pixel(imgr, x, y, pixel);
+
+            }
+        }
+    }
+}*/
 
 int main() {
     
