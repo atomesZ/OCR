@@ -4,6 +4,7 @@
 #include "SDL/SDL_image.h"
 #include "err.h"
 #include "display.h"
+#include "rlsa.h"
 
 // Loop that stop when the press the "x" button
 void pause()

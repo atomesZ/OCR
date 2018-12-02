@@ -5,6 +5,8 @@
 #include "err.h"
 #include "display.h"
 #include "interface.h"
+#include "network.h"
+#include "backprop.h"
 
 int main() 
 {
