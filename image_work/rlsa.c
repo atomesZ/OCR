@@ -25,7 +25,7 @@ void SDL_to_matrix(SDL_Surface *img, double* mat) {
 void create_dataset(char* filename, double *m, char value)
 {
     FILE *file;//declare file
-    file = fopen(filename, "a");//create file or add
+    file = fopen(filename, "w+");//create file or add
 
     int dim = 32;
 

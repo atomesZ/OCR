@@ -111,6 +111,7 @@ void pause1()
 		    s = malloc(sizeof(char) * num_char);
 		    readtxt(net, "timtxt", s, num_char);
 		    printf(s);
+		    printf("\n");
 		    free(s);
 		    
 		 }
