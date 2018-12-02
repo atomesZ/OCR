@@ -210,7 +210,7 @@ void printNet(Network net)
 
 int num_errors(Network net, char* filename)
 {
-	int max = 946;
+	int max = 1;
 	int dim = 32;
 	int nbfails = 0;//Init the number of errors
 	FILE *file;//declare file
@@ -321,7 +321,7 @@ void train(Network net, char* filename)
 	double lrat;
 	long max = 946;
 	int dim = 32;
-	long b = 50000;
+	long b = 1000;
 	srand(time(NULL));
 	file = fopen(filename, "r");//open file to read
 	for(long a = 1; a <= b; ++a)
