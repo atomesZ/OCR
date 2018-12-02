@@ -1,1 +1,4 @@
-OCR
+To use this ONR (Optical numbers recognition), rename the image of your number (32*32 white and black) as tim.png and hit the Text Recognition button.
+The display button is for showing the image on screen.
+The Grayscale button is for showing.
+
