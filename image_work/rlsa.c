@@ -368,16 +368,63 @@ void print_mat(int* mat, int rows, int cols) {
 //    }
 //}
 
-/*void resize (SDL_Surface* img1, SDL_Surface* imgr, float pas)
+void resizeL (SDL_Surface* img1, SDL_Surface* imgr, float pas)
 {
     float res = 0;
     float test = 0;
-    for (int x = 0; x<img2 -> h; ++x)
+    for (int x = 0; x<imgr -> h; ++x)
     {
-        for (int y = 0; y<img2->w; ++y)
+        for (int y = 0; y<imgr->w; ++y)
         {
-
             res= y*pas;
+            if (res < img1->w)
+            {
+                test = res;
+                while (test >= 1)
+                {
+                     test -=1;
+                }
+                if (test == 0)
+                {
+                    Uint32 pixel1 = get_pixel(img1, x, res);
+                    Uint8 r1, g1, b1;
+                    SDL_GetRGB(pixel1, img1->format, &r1, &g1, &b1);
+
+                    Uint32 pixel = SDL_MapRGB(img1->format, r1, r1, r1);
+                    put_pixel(imgr, x, y, pixel);
+
+                }
+                else
+                {
+                    Uint32 pixel1 = get_pixel(img1, x, (res-test));
+                    Uint8 r1, g1, b1;
+                    SDL_GetRGB(pixel1, img1->format, &r1, &g1, &b1);
+
+                    Uint32 pixel2 = get_pixel(img1, x, (res+(1-test)));
+                    Uint8 r2, g2, b2;
+                    SDL_GetRGB(pixel2, img1->format, &r2, &g2, &b2);
+
+                    float r = r1*(1-test) + r2*test;
+                    Uint32 pixel = SDL_MapRGB(imgr->format, r, r, r);
+                    put_pixel(imgr, x, y, pixel);
+                }
+            }
+            else 
+            {}
+        }
+    }
+}
+
+void resizeC (SDL_Surface* img1, SDL_Surface* imgr, float pas)
+{
+    float res = 0;
+    float test = 0;
+    for (int y = 0; y<imgr -> w; ++y)
+    {
+        for (int x = 0; x<imgr->h; ++x)
+        {
+            
+            res= x*pas;
             test = res;
             while (test >= 1)
             {
@@ -385,7 +432,7 @@ void print_mat(int* mat, int rows, int cols) {
             }
             if (test == 0)
             {
-                Uint32 pixel1 = get_pixel(img1, x, res);
+                Uint32 pixel1 = get_pixel(img1, res, y);
                        Uint8 r1, g1, b1;
                        SDL_GetRGB(pixel1, img1->format, &r1, &g1, &b1);
 
@@ -395,22 +442,22 @@ void print_mat(int* mat, int rows, int cols) {
             }
             else
             {
-                Uint32 pixel1 = get_pixel(img1, x, (res-test));
+                Uint32 pixel1 = get_pixel(img1, (res-test), y);
                         Uint8 r1, g1, b1;
-                        SDL_GetRGB(pixel1, img->format, &r1, &g1, &b1);
-
-                Uint32 pixel2 = get_pixel(img1, x, (res+(1-test)));
+                        SDL_GetRGB(pixel1, imgr->format, &r1, &g1, &b1);
+            
+                Uint32 pixel2 = get_pixel(img1, (res+(1-test)), y);
                        Uint8 r2, g2, b2;
-                       SDL_GetRGB(pixel2, img->format, &r2, &g2, &b2);
+                       SDL_GetRGB(pixel2, img1->format, &r2, &g2, &b2);
 
-                float r = r1*(1-test) + r2*test
-                pixel = SDL_MapRGB(img->format, r, r, r);
+                float r = r1*(1-test) + r2*test;
+                Uint32 pixel = SDL_MapRGB(imgr->format, r, r, r);
                             put_pixel(imgr, x, y, pixel);
 
             }
         }
     }
-}*/
+}
 
 int main() {
     
@@ -472,6 +519,19 @@ int main() {
     //SDL_to_matrix(result, mat);
     //print_mat(mat, rows, cols);
     //printf("---------------------------------------------------------------------------------------\n");
+    
+    SDL_Surface* r;
+    r = load_image("image_test/caractere.png");
+    display_image(r);
+    wait_for_keypressed();
+
+    SDL_Surface* res;
+    res = SDL_CreateRGBSurface(0,32,32,32,rmask,gmask,bmask, amask);
+    SDL_SoftStretch (r,NULL,res,NULL);
+
+    display_image(res);
+    wait_for_keypressed();
+
     rlsa_SDLup(image_surface1, 1000);
     display_image(image_surface1);
     wait_for_keypressed();
@@ -484,11 +544,11 @@ int main() {
     display_image(result1);
     wait_for_keypressed();
 
-    rlsa_SDLleft(image_surface3, 700);
+    rlsa_SDLleft(image_surface3, 400);
     display_image(image_surface3);
     wait_for_keypressed();
 
-    rlsa_SDLright(image_surface4, 700);
+    rlsa_SDLright(image_surface4, 400);
     display_image(image_surface4);
     wait_for_keypressed();
 
@@ -497,6 +557,14 @@ int main() {
     wait_for_keypressed();
 
     rlsa(result1, result2, result);
+    display_image(result);
+    wait_for_keypressed();
+
+    rlsa_SDLleft(result, 23);
+    display_image(result);
+    wait_for_keypressed();
+
+    rlsa_SDLright(result, 23);
     display_image(result);
 
     
