@@ -24,15 +24,15 @@ void SDL_to_matrix(SDL_Surface *img, int* mat) {
 void rlsa_SDLup(SDL_Surface* img, int thrs) {
 
     int zero_count = 0;
-    for (int x = 0; x < img->w - 1; ++x) {
+    for (int x = 0; x < img->w; ++x) {
 
         zero_count = 0;
-        for (int y = 0; y < img->h - 1; ++y) {
+        for (int y = 0; y < img->h; ++y) {
 
             Uint32 pixel = get_pixel(img, x, y);
             Uint8 r, g, b;
             SDL_GetRGB(pixel, img->format, &r, &g, &b);
-            if (r == 0) {
+            if (r == 255) {
 
                 if (zero_count < thrs) {
                     for (int z = y - zero_count; z < y; ++z) {
@@ -53,11 +53,11 @@ void rlsa_SDLdown(SDL_Surface* img, int thrs) {
 
     // Zero counter
     int zero_count = 0;
-    for (int x = 0; x < img->w - 1; ++x) {
+    for (int x = 0; x < img->w; ++x) {
 
         // Reset counter because moving to next column
         zero_count = 0;
-        for (int y = img->h - 1; y > 1; --y) {
+        for (int y = img->h - 1; y > 0; --y) {
 
             // Recovering the pixel
             Uint32 pixel = get_pixel(img, x, y);
@@ -65,7 +65,7 @@ void rlsa_SDLdown(SDL_Surface* img, int thrs) {
             SDL_GetRGB(pixel, img->format, &r, &g, &b);
 
             // Black pixel case
-            if (r == 0) {
+            if (r == 255) {
 
                 // Zero counter under threshold
                 if (zero_count < thrs) {
@@ -88,11 +88,11 @@ void rlsa_SDLleft(SDL_Surface* img, int thrs) {
    
     // Zero counter
     int zero_count = 0;
-    for (int y = 0; y < img->h - 1; ++y) {
+    for (int y = 0; y < img->h; ++y) {
 
         // Reset counter because moving to next line 
         zero_count = 0;
-        for (int x = 0; x < img->w - 1; ++x) {
+        for (int x = 0; x < img->w; ++x) {
             
             // Recovering the pixel 
             Uint32 pixel = get_pixel(img, x, y);
@@ -100,7 +100,7 @@ void rlsa_SDLleft(SDL_Surface* img, int thrs) {
             SDL_GetRGB(pixel, img->format, &r, &g, &b);
 
             // Black pixel case
-            if (r == 0) {
+            if (r == 255) {
                 
                 // Zero counter under threshold
                 if (zero_count < thrs) {
@@ -127,11 +127,11 @@ void rlsa_SDLright(SDL_Surface* img, int thrs) {
    
     // Zero counter
     int zero_count = 0;
-    for (int y = 0; y < img->h - 1; ++y) {
+    for (int y = 0; y < img->h; ++y) {
 
         // Reset counter because moving to next column
         zero_count = 0;
-        for (int x = img->w - 1; x > 1; --x) {
+        for (int x = img->w - 1; x > 0; --x) {
             
             // Recovering the pixel
             Uint32 pixel = get_pixel(img, x, y);
@@ -139,7 +139,7 @@ void rlsa_SDLright(SDL_Surface* img, int thrs) {
             SDL_GetRGB(pixel, img->format, &r, &g, &b);
 
             // Black pixel case
-            if (r == 0) {
+            if (r == 255) {
                 
                 // Zero counter under threshold
                 if (zero_count < thrs) {
@@ -238,41 +238,33 @@ void rlsa(char* file) {
                                         rmask, gmask, bmask, amask);
 
 
-    rlsa_SDLup(image_surface1, 1000);
-    display_image(image_surface1);
-    wait_for_keypressed();
+    rlsa_SDLup(image_surface1, 1600);
+    // display_image(image_surface1);
+    // wait_for_keypressed();
 
-    rlsa_SDLdown(image_surface2, 1000);
-    display_image(image_surface2);
-    wait_for_keypressed();
+    rlsa_SDLdown(image_surface2, 1600);
+    // display_image(image_surface2);
+    // wait_for_keypressed();
 
     rlsalc(image_surface1, image_surface2, result1);
-    display_image(result1);
-    wait_for_keypressed();
+    // display_image(result1);
+    // wait_for_keypressed();
 
-    rlsa_SDLleft(image_surface3, 400);
-    display_image(image_surface3);
-    wait_for_keypressed();
+    rlsa_SDLleft(image_surface3, 1000);
+    // display_image(image_surface3);
+    // wait_for_keypressed();
 
-    rlsa_SDLright(image_surface4, 400);
-    display_image(image_surface4);
-    wait_for_keypressed();
+    rlsa_SDLright(image_surface4, 1000);
+    // display_image(image_surface4);
+    // wait_for_keypressed();
 
     rlsalc(image_surface3, image_surface4, result2);
-    display_image(result2);
-    wait_for_keypressed();
+    // display_image(result2);
+    // wait_for_keypressed();
 
     rlsalc(result1, result2, result);
     display_image(result);
-    wait_for_keypressed();
-
-    rlsa_SDLleft(result, 23);
-    display_image(result);
-    wait_for_keypressed();
-
-    rlsa_SDLright(result, 23);
-    display_image(result);
-    wait_for_keypressed();
+    // wait_for_keypressed();
 
     int boolean = wait_for_keypressed();
 
