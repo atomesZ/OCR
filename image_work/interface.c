@@ -12,6 +12,20 @@
 // Loop that stop when the press the "x" button
 void pause1()
 {
+    Uint32 rmask, gmask, bmask, amask;
+    
+    #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+        rmask = 0xff000000;
+        gmask = 0x00ff0000;
+        bmask = 0x0000ff00;
+        amask = 0x000000ff;
+    #else
+        rmask = 0x000000ff;
+        gmask = 0x0000ff00;
+        bmask = 0x00ff0000;
+        amask = 0xff000000;
+    #endif
+    
     int continuer = 1;
 
     // Coordinate of the cursor
@@ -74,7 +88,32 @@ void pause1()
                 }
 
                 // Text Recognition button
-                else if (X > 206 && Y > 573 && X < 583 && Y < 652) { }
+                else if (X > 206 && Y > 573 && X < 583 && Y < 652) {
+		    SDL_Surface *tim = IMG_Load("image_test/tim.png");
+                    SDL_Surface *tim_resize;
+		    tim_resize = tim;
+		    if(tim->h != 32 && tim->w != 32)
+		    {
+                    	tim_resize = SDL_CreateRGBSurface(0, 32, 32, 32, rmask, gmask, bmask, amask);
+                    
+		    	SDL_SoftStretch(tim, NULL, tim_resize, NULL);
+		    }
+                    double *m;
+		    m = malloc((sizeof(double)*32*32));
+		    SDL_to_matrix(tim_resize, m);
+		    create_dataset("timtxt", m, 42);
+		    //print_mat(m,32,32);
+		    free(m);
+		    Network net = loadNetwork("saybe");
+ 
+		    char *s;
+		    int num_char = 1;
+		    s = malloc(sizeof(char) * num_char);
+		    readtxt(net, "timtxt", s, num_char);
+		    printf(s);
+		    free(s);
+		    
+		 }
                              
                 break;           
         }
@@ -83,6 +122,13 @@ void pause1()
 
 void interface() 
 {
+    //Network net = loadNetwork("saybe");
+    /*char *s;
+    int num_char = 946;
+    s = malloc(sizeof(char) * num_char);
+    readtxt(net, "data_set", s, num_char);
+    printf(s);
+    free(s);*/
     // Image of the interface
     SDL_Surface *interface = IMG_Load("interface.png");
 

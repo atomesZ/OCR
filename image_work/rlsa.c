@@ -5,8 +5,9 @@
 #include "SDL/SDL_image.h"
 #include "pixel_operations.h"
 #include "interface.h"
+#include "rlsa.h"
 
-void SDL_to_matrix(SDL_Surface *img, int* mat) {
+void SDL_to_matrix(SDL_Surface *img, double* mat) {
     
     for(int x = 0; x < img->h; ++x) {
         for(int y = 0; y < img->w; ++y) {
@@ -19,6 +20,29 @@ void SDL_to_matrix(SDL_Surface *img, int* mat) {
                 mat[x * img->h + y] = 0;
             }
     }
+}
+
+void create_dataset(char* filename, double *m, char value)
+{
+    FILE *file;//declare file
+    file = fopen(filename, "a");//create file or add
+
+    int dim = 32;
+
+    if(file == NULL)
+        errx(1, "Could not open file");
+
+    for(int h = 0; h < dim; ++h)
+    {
+        for(int j = 0; j < dim; ++j)
+        {
+            fputc((int)m[h*dim + j] + 48, file);
+        }
+        fputc(10, file);
+    }
+    fputc((int)value, file);
+    fputc(10, file);
+    fclose(file);
 }
 
 void rlsa_SDLup(SDL_Surface* img, int thrs) {
@@ -186,11 +210,11 @@ void rlsalc(SDL_Surface* img1, SDL_Surface* img2, SDL_Surface* imgr) {
     }
 }
 
-void print_mat(int* mat, int rows, int cols) {
+void print_mat(double* mat, int rows, int cols) {
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            printf("%i", mat[i * cols + j]);
+            printf("%i",(int) mat[i * cols + j]);
         }
         printf("\n");
     }
