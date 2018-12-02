@@ -5,9 +5,12 @@
 #include "err.h"
 #include "display.h"
 #include "rlsa.h"
+#include "network.h"
+#include "backprop.h"
+#include "interface.h"
 
 // Loop that stop when the press the "x" button
-void pause()
+void pause1()
 {
     int continuer = 1;
 
@@ -94,6 +97,6 @@ void interface()
     // Title
     SDL_WM_SetCaption("OCR", NULL);
     
-    pause();
+    pause1();
     SDL_Quit();
 }
