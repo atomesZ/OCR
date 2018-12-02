@@ -83,22 +83,6 @@ int wait_for_keypressed()
     }
 
     return 0;
-        
-    
-    // Wait for a key to be down.
-
-    /* do
-    {
-        SDL_PollEvent(&event);
-    } while(event.type != SDL_KEYDOWN && event.key.keysym.sym != SDLK_ESCAPE);
-
-    // Wait for a key to be up.
-
-    do
-    {
-        SDL_PollEvent(&event);
-    } while(event.type != SDL_KEYUP && event.key.keysym.sym != SDLK_ESCAPE); */
-
 }
 
 void display(char *file)

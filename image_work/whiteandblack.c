@@ -171,6 +171,8 @@ int main()
 		    Uint8 r, g, b;
 		    SDL_GetRGB(pixel, image_surface->format, &r, &g, &b);
 		    
+		    //Uint8 black_white = (r + g + b) / 3
+		    
 		    // Update the pixel based on Otsu threshold
 		    Uint8 black_white = r < t ? 0 : 255;
 		    pixel = SDL_MapRGB(image_surface->format, black_white, black_white, black_white);

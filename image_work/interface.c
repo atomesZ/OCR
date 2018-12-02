@@ -48,24 +48,27 @@ void pause()
                 
                 // Display button 
                 if (X > 206 && Y > 260 && X < 583 && Y < 338) {
-                    display("image_test/my_image02.jpg");
-		    continuer = 0;
-		}
+                    display("image_test/largepreview.png");
+                    continuer = 0;
+                }
                 
                 // Grayscale button
                 else if (X > 206 && Y > 340 && X < 583 && Y < 416) {
-                    grayscale("image_test/my_image02.jpg");
-		    continuer = 0;
-		}
+                    grayscale("image_test/largepreview.png");
+		            continuer = 0;
+		        }
 
                 // Black & White button
                 else if (X > 206 && Y > 417 && X < 583 && Y < 495) {
-                    whiteandblack("image_test/my_image02.jpg");
-		    continuer = 0;
-		}
+                    whiteandblack("image_test/largepreview.png");
+		            continuer = 0;
+		        }
 
                 // Text Segmentation button
-                else if (X > 206 && Y > 496 && X < 583 && Y < 573) { }
+                else if (X > 206 && Y > 496 && X < 583 && Y < 573) {
+                     rlsa("image_test/largepreview.png");
+                     continuer = 0;
+                }
 
                 // Text Recognition button
                 else if (X > 206 && Y > 573 && X < 583 && Y < 652) { }
