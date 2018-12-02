@@ -9,11 +9,11 @@ int main()
 	Network net = initNetwork(sizes);*/
 	for(int i = 0; i < 1; ++i)
 	{
-		//train(net, "data_set");
-		
+		train(net, "data_set");
+		/*
 		int num_char = 946;
 		printf("Errors: %i / %i\n", num_errors(net, "data_set"), num_char);
-		/*
+		*
 		char *s;
 		s = malloc(sizeof(char) * num_char);
 		readtxt(net, "data_set", s, num_char);
@@ -22,6 +22,9 @@ int main()
 	   printf("\n");*/
 
 	}
+
+	int num_char = 946;
+	printf("Errors: %i / %i\n", num_errors(net, "data_set"), num_char);
 	
 	freenet(net);
 	return 0;
