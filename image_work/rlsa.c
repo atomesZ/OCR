@@ -108,13 +108,13 @@ void rlsa_l(int* mat, size_t rows, size_t cols, size_t hor_thres) {
     }
 }
 
-void rlsa_SDL(SDL_Surface* img, int thrs) {
+void rlsa_SDLup(SDL_Surface* img, int thrs) {
 
     int zero_count = 0;
-    for (int x = 0; x < img->w; ++x) {
+    for (int x = 0; x < img->w - 1; ++x) {
 
         zero_count = 0;
-        for (int y = 0; y < img->h; ++y) {
+        for (int y = 0; y < img->h - 1; ++y) {
 
             Uint32 pixel = get_pixel(img, x, y);
             Uint8 r, g, b;
@@ -136,15 +136,43 @@ void rlsa_SDL(SDL_Surface* img, int thrs) {
     }
 }
 
-void rlsa_SDL2(SDL_Surface* img, int thrs) {
+void rlsa_SDLdown(SDL_Surface* img, int thrs) {
+
+    int zero_count = 0;
+    for (int x = 0; x < img->w - 1; ++x) {
+
+        zero_count = 0;
+        for (int y = img->h - 1; y > 1; --y) {
+
+            Uint32 pixel = get_pixel(img, x, y);
+            Uint8 r, g, b;
+            SDL_GetRGB(pixel, img->format, &r, &g, &b);
+            if (r == 255) {
+
+                if (zero_count < thrs) {
+                    for (int z = y + zero_count; z > y; --z) {
+                        pixel = SDL_MapRGB(img->format, 0, 0, 0);
+                        put_pixel(img, x, z, pixel);
+                    }
+                }
+            }
+
+            else {
+                ++zero_count;
+            }
+        }
+    }
+}
+
+void rlsa_SDLleft(SDL_Surface* img, int thrs) {
    
     // Compteur de zéros
     int zero_count = 0;
-    for (int y = 0; y < img->h; ++y) {
+    for (int y = 0; y < img->h - 1; ++y) {
 
         // Reset du compteur car passage à la ligne suivante
         zero_count = 0;
-        for (int x = 0; x < img->w; ++x) {
+        for (int x = 0; x < img->w - 1; ++x) {
             
             // Récupération du pixel
             Uint32 pixel = get_pixel(img, x, y);
@@ -174,6 +202,69 @@ void rlsa_SDL2(SDL_Surface* img, int thrs) {
     }
 }
 
+
+void rlsa_SDLright(SDL_Surface* img, int thrs) {
+   
+    // Compteur de zéros
+    int zero_count = 0;
+    for (int y = 0; y < img->h - 1; ++y) {
+
+        // Reset du compteur car passage à la ligne suivante
+        zero_count = 0;
+        for (int x = img->w - 1; x > 1; --x) {
+            
+            // Récupération du pixel
+            Uint32 pixel = get_pixel(img, x, y);
+            Uint8 r, g, b;
+            SDL_GetRGB(pixel, img->format, &r, &g, &b);
+
+            // Cas du pixel noir
+            if (r == 0) {
+                
+                // Cas du nombre de zéros rencontrés inférieur au seuil
+                if (zero_count < thrs) {
+                    for (int z = x + zero_count; z > x; --z) {
+                        pixel = SDL_MapRGB(img->format, 0, 0, 0);
+                        put_pixel(img, z, y, pixel);
+                    }
+                }
+
+                else
+                    zero_count = 0;
+            }
+
+            // Sinon on incrémente le compteur de 0
+            else {
+                ++zero_count;
+            }
+        }
+    }
+}
+
+void rlsa(SDL_Surface* img1, SDL_Surface* img2, SDL_Surface* imgr) {
+
+    for (int x = 0; x < img1->w; ++x) {
+        for (int y = 0; y < img2->h; ++y) {
+            Uint32 pixel1 = get_pixel(img1, x, y);
+            Uint8 r1, g1, b1;
+            SDL_GetRGB(pixel1, img1->format, &r1, &g1, &b1);
+ 
+            Uint32 pixel2 = get_pixel(img2, x, y);
+            Uint8 r2, g2, b2;
+            SDL_GetRGB(pixel2, img2->format, &r2, &g2, &b2);
+
+            if ((r1 == 0) && (r2 == 0)) {
+                Uint32 pixel = SDL_MapRGB(imgr->format, 0, 0, 0);
+                put_pixel(imgr, x, y, pixel);
+            }
+
+            else {
+                Uint32 pixel = SDL_MapRGB(imgr->format, 255, 255, 255);
+                put_pixel(imgr, x, y, pixel);
+            }
+        }
+    }
+}
 
 //void rlsa_c (double mat[],size_t rows, size_t cols, size_t hor_thres)
 ///{
@@ -270,75 +361,114 @@ void print_mat(int* mat, int rows, int cols) {
 //    }
 //}
 
-void create_dataset(char* filename, double *m, char value)
-{
-	FILE *file;//declare file
-	file = fopen(filename, "a");//create file or add
-
-	int dim = 28;
-
-	if(file == NULL)
-		errx(1, "Could not open file");
-
-	for(int h = 0; h < dim; ++h)
-	{
-		for(int j = 0; j < dim; ++j)
-		{
-			fputc((int)m[h*dim + j] + 48, file);
-		}
-		fputc((int)"\n", file);
-	}
-	fputc((int)value, file);
-	fputc((int)"\n", file);
-	fclose(file);
-}
-
 int main() {
     
-    SDL_Surface* image_surface;
+    SDL_Surface* image_surface1;
+    SDL_Surface* image_surface2;
+    SDL_Surface* image_surface3;
+    SDL_Surface* image_surface4;
+    SDL_Surface* result1; 
+    SDL_Surface* result2;
     SDL_Surface* result;
+
+    //SDL_Surface* screen_surface;
+
+    // Pixels masks
+    Uint32 rmask, gmask, bmask, amask;
     
-    result->w = 28, result->h = 28;
-    SDL_Surface* screen_surface;
+    #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+        rmask = 0xff000000;
+        gmask = 0x00ff0000;
+        bmask = 0x0000ff00;
+        amask = 0x000000ff;
+    #else
+        rmask = 0x000000ff;
+        gmask = 0x0000ff00;
+        bmask = 0x00ff0000;
+        amask = 0xff000000;
+    #endif
 
     // Initialize the SDL
     init_sdl();
 
     // Load the image
-    image_surface = load_image("image_test/my_blackandwhite_image.bmp");
-    SDL_SoftStretch(image_surface, NULL, result, NULL);
+    image_surface1 = load_image("image_test/my_blackandwhite_image.bmp");
+    image_surface2 = load_image("image_test/my_blackandwhite_image.bmp");
+    image_surface3 = load_image("image_test/my_blackandwhite_image.bmp");
+    image_surface4 = load_image("image_test/my_blackandwhite_image.bmp");
+
+    result1 = SDL_CreateRGBSurface(0, image_surface1->w, image_surface1->h, 32,
+                                        rmask, gmask, bmask, amask);
+
+    result2 = SDL_CreateRGBSurface(0, image_surface1->w, image_surface1->h, 32,
+                                        rmask, gmask, bmask, amask);
+
+    result = SDL_CreateRGBSurface(0, image_surface1->w, image_surface1->h, 32,
+                                        rmask, gmask, bmask, amask);
+    //SDL_SoftStretch(image_surface, NULL, result, NULL);
 
     // Matrix
-    int *mat;
-    mat = malloc(sizeof(int) * result->h * result->w);
+    //int *mat;
+    //mat = malloc(sizeof(int) * result->h * result->w);
 
-    size_t rows = result->h;
-    size_t cols = result->w;
+    //size_t rows = result->h;
+    //size_t cols = result->w;
 
     // Display the image
-    screen_surface = display_image(image_surface);
-    
+    //screen_surface = display_image(image_surface1);
+    //wait_for_keypressed();
+
+    //SDL_to_matrix(result, mat);
+    //print_mat(mat, rows, cols);
+    //printf("---------------------------------------------------------------------------------------\n");
+    rlsa_SDLup(image_surface1, 1000);
+    display_image(image_surface1);
     wait_for_keypressed();
 
-    SDL_to_matrix(result, mat);
-    print_mat(mat, rows, cols);
-    printf("---------------------------------------------------------------------------------------\n");
-    rlsa_SDL2(image_surface, 500);
-    display_image(image_surface);
+    rlsa_SDLdown(image_surface2, 1000);
+    display_image(image_surface2);
+    wait_for_keypressed();
 
-    free(mat);
+    rlsa(image_surface1, image_surface2, result1);
+    display_image(result1);
+    wait_for_keypressed();
+
+    rlsa_SDLleft(image_surface3, 700);
+    display_image(image_surface3);
+    wait_for_keypressed();
+
+    rlsa_SDLright(image_surface4, 700);
+    display_image(image_surface4);
+    wait_for_keypressed();
+
+    rlsa(image_surface3, image_surface4, result2);
+    display_image(result2);
+    wait_for_keypressed();
+
+    rlsa(result1, result2, result);
+    display_image(result);
+
+    
+
+    //free(mat);
 
     // Update the surfaces    
-    update_surface(screen_surface, image_surface);
+    //update_surface(screen_surface, image_surface);
     
     // Wait for a key to be pressed.
     wait_for_keypressed();
 
     // Free the image surface.   
-    SDL_FreeSurface(image_surface);
-    
+    SDL_FreeSurface(image_surface1);
+    SDL_FreeSurface(image_surface2);
+    SDL_FreeSurface(result1);
+    SDL_FreeSurface(image_surface3);
+    SDL_FreeSurface(image_surface4);
+    SDL_FreeSurface(result2);
+    SDL_FreeSurface(result);
+
     // Free the screen surface.
-    SDL_FreeSurface(screen_surface);
+    //SDL_FreeSurface(screen_surface);
 
     return 0;
 }
